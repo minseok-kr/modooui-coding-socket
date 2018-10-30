@@ -1,0 +1,65 @@
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script>
+        /* Socket.io 초기 설정 */
+        $(function () {
+            var socket = io();
+            var sendStatus = document.getElementById('send-state');
+
+            socket.on('connection', function (data) {
+                sendStatus.innerHTML = data;
+
+            });
+
+            /**
+            * F: 메시지를 받았을때 뒤 함수 호출
+            */
+            socket.on('newMessage', (data) => {
+                sendStatus.innerHTML = data;
+            });
+
+            /**
+            * C: 서버에 메시지 전송
+            */
+            function emitMessage(message) {
+                socket.emit('message', message);
+            }
+
+            /**
+            * B: `보내기` 버튼 클릭시 메시지 전송
+            */
+            $("#button").click(function () {
+                let msg = $("#txt_message").val();
+                emitMessage(msg);
+
+                $("#txt_message").val("");
+            });
+
+        })
+
+    </script>
+
+</head>
+
+<body>
+    <p id='send-state'></p>
+    <input type="text" id="txt_message" placeholder="message" />
+    <button id='button'>보내기</button>
+    
+    <h1>Socket.io Flow</h1>
+    
+    <p>(Server) A: 웹페이지 접속할때까지 대기</p>
+    <p>(Client) B: `보내기` 버튼 클릭시 메시지 전송</p>
+    <p>(Client) C: 서버에 메시지 전송</p>
+    <p>(Server) D: 웹페이지 접속 이후 메시지를 받을때까지 대기</p>
+    <p>(Server) E: 받은 메시지를 다시 클라이언트에 전송</p>
+    <p>(Client) F: 메시지를 받았을때 뒤 함수 호출</p>
+    
+    <span>.on([eventName], ...): 이벤트의 emit을 감지</span>
+    <span>.emit([eventName], ...): 이벤트를 상대(서버)에 전송</span>
+</body>
+
+</html>
