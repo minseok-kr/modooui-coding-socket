@@ -20,7 +20,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/python/python.min.js" ></script>
 
 
-
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
 
@@ -30,19 +29,15 @@
     <body>
         <p id='send-state'></p>
         
-        <div id="txt-code-client"></div>
-        <div id="txt-code-partner"></div>
-
+        <h1>Client</h1>
+        <div id="wrapper-code">
+            <div id="txt-code-client"></div>
+        </div>
+        
         <button id='button'>보내기</button>
 
         <button id='btn_help'>도움 요청</button>
         <button id='btn_submit'>제출</button>
-
-
-        <div id="container-manager-control" style="display: none;">
-            <button id='btn_success'>성공</button>
-            <button id='btn_failure'>실패</button>    
-        </div>
 
     </body>
     
@@ -59,16 +54,6 @@
 
             socket.on('newMessage', (data) => {
                 sendStatus.innerHTML = data;
-            });
-
-            socket.on('codeUpdate', (data) => {
-                $codeEidtor = $("#txt-code-manager");
-//                $codeEidtor.setValue(data);
-                partnerCodeMirror.setValue(data);
-                
-                $codeEidtor.removeClass('helpped_client');
-                $codeEidtor.removeClass('submitted_client');
-                $("#txt-code-manager textarea").attr("disabled", false);
             });
 
             socket.on('somebodyHelp', (data) => {
@@ -108,7 +93,6 @@
                 socket.emit('code', code);
             }
             
-            
             /**
             *   코드 에디터 초기화.
             */
@@ -118,21 +102,13 @@
                 mode:  "python",
                 showCursorWhenSelecting: false
             });
-            myCodeMirror.setValue("");
-
-            partnerCodeMirror = CodeMirror(document.getElementById("txt-code-partner"), {
-                lineNumbers: true,
-                mode:  "python",
-                showCursorWhenSelecting: false
-            });
-            
+            myCodeMirror.setValue("");            
 
             /**
             *   코드 에디터 동작
             */
             $("#txt-code-client textarea").keyup(function() {
-                /* Emiit */
-//                partnerCodeMirror.setValue(myCodeMirror.getValue());
+                /* Emmit */
                 emitCodeUpdate(myCodeMirror.getValue());
             })
         })

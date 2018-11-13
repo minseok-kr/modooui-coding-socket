@@ -5,30 +5,54 @@ const express = require('express');
 const socketIO = require('socket.io');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
-const INDEX = path.join(__dirname, 'index.html');
+const app = express();
+const server = require('http').createServer(app);
+const port = process.env.PORT || 3000;
 
-/* 웹서버 등록 */
-const server = express()
-    .use((req, res) => res.sendFile(INDEX))
-    .listen(PORT, () => console.log(`Listening on ${PORT}`));
+app.use(express.static(path.join(__dirname, '.')));
 
-/* 웹서버에 socket.io */
+server.listen(port, () => console.log('>>> http://localhost:' + port));
+
+//app.get('/', function(req, res) {
+//    res.sendFile(__dirname + '/client-index.html')
+//})
+//
+//app.get('/manage', function(req, res) {
+//    res.sendFile(__dirname + '/manager-index.html')
+//})
+
+//app.use(express.static(path.join(__dirname, 'css/styles.css')));
+
 const io = socketIO(server);
-
-/* A: 웹페이지 접속했을때 뒤 함수 호출 */
 io.on('connection', (socket) => {
     console.log('Client connected');
     socket.emit('connection', "Connected.");
+    
 
-    /* D: 웹페이지 접속 이후 메시지를 받을때 뒤 함수 호출 */
-    socket.on('message', function (data) {
-        /* 서버 콘솔에 메시지 로그 */
-        console.log("메시지가 도착했습니다. : " + data);
+    socket.on('code', function(data) {
+//        console.log("CodeUpdate!: " + data);
+        
+        /* TODO */
+        // socket.of(roomnum).emit 형태로 변경
+        socket.broadcast.emit('codeUpdate', data);
+    });
 
-        /* E: 받은 메시지를 다시 클라이언트에 전송 */
-        socket.emit('newMessage', data);
-    })
+    /**
+    *   도움 요청
+    */
+    socket.on('help', (data) => {
+        console.log("Somebody wants help!")
+        socket.broadcast.emit('somebodyHelp', data)
+    });
+
+    /**
+    *   도움 요청
+    */
+    socket.on('submit', (data) => {
+        console.log("Somebody submits!")
+
+        socket.broadcast.emit('somebodySubmit', data)
+    });
 
     /* 웹페이지를 닫았을때 뒤 함수 호출*/
     socket.on('disconnect', () => console.log('Client disconnected'));

@@ -1,0 +1,39 @@
+* { font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif'; }
+
+.code_editor {
+    display: inline-block
+    width: 50%;
+    height: 300px;
+    resize: none;
+}
+
+.helpped_client {
+    border-width: 5px !important;
+    border-radius: 3px !important;
+    border-color: red !important;
+    background: red;
+}
+
+.submitted_client {
+    border-width: 5px !important;
+    border-radius: 3px !important;
+    border-color: blue !important;
+    background: blue;
+}
+
+#txt-code-client {
+    display: inline-block;
+    height: 300px;
+    width: 100%;
+    background: red;
+}
+
+#txt-code-manager {
+    display: inline-block;
+    height: 200px;
+    width: 100%;
+}
+
+#wrapper-code {
+    padding: 5px;
+}

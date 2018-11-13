@@ -4,6 +4,7 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js" integrity="sha256-H28SdxWrZ387Ldn0qogCzFiUDDxfPiNIyJX7BECQkDE=" crossorigin="anonymous"></script>
         <!--    <script src="./js/client.js"></script>-->
         <!--    <script src="./js/manager.js"></script>-->
 
@@ -29,15 +30,13 @@
 
     <body>
         <p id='send-state'></p>
-        
-        <div id="txt-code-client"></div>
-        <div id="txt-code-partner"></div>
+
+        <h1>Partner</h1>
+        <div id="wrapper-code">
+            <div id="txt-code-manager"></div>
+        </div>
 
         <button id='button'>보내기</button>
-
-        <button id='btn_help'>도움 요청</button>
-        <button id='btn_submit'>제출</button>
-
 
         <div id="container-manager-control" style="display: none;">
             <button id='btn_success'>성공</button>
@@ -45,8 +44,27 @@
         </div>
 
     </body>
-    
+
     <script>
+
+        /**
+            *   코드 에디터 초기화.
+            */
+        partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager"), {
+            lineNumbers: true,
+            mode:  "python",
+            showCursorWhenSelecting: false
+        });
+
+        /**
+            *   코드 에디터 동작
+            */
+        $("#txt-code-manager textarea").keyup(function() {
+            /* Emit */
+            //                emitCodeUpdate(myCodeMirror.getValue());
+        })
+
+
         /* Socket.io 초기 설정 */
         $(function () {
             var socket = io();
@@ -62,41 +80,26 @@
             });
 
             socket.on('codeUpdate', (data) => {
-                $codeEidtor = $("#txt-code-manager");
-//                $codeEidtor.setValue(data);
+                $codeEidtor = $("#wrapper-code");
                 partnerCodeMirror.setValue(data);
-                
+
                 $codeEidtor.removeClass('helpped_client');
                 $codeEidtor.removeClass('submitted_client');
-                $("#txt-code-manager textarea").attr("disabled", false);
+                
+                $codeEidtor.css({backgroundColor: "#FFFF0050"});
+                $codeEidtor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);    
             });
 
             socket.on('somebodyHelp', (data) => {
-                $("#txt-code-manager").addClass('helpped_client');
-                $("#txt-code-manager").addClass('block_update');
-                $("#txt-code-client textarea").attr("disabled", true);
+                $("#wrapper-code").addClass('helpped_client');
+                $codeEidtor.css({backgroundColor: "red"});
             });    
 
             socket.on('somebodySubmit', (data) => {
-                $("#txt-code-manager").addClass('submitted_client');
-                $("#txt-code-manager").addClass('block_update');
-                $("#txt-code-client textarea").attr("disabled", true);
+                $("#wrapper-code").addClass('submitted_client');
+                $codeEidtor.css({backgroundColor: "blue"});
             });
 
-            /**
-                *   제출, 완료
-                */
-
-            $('#btn_help').click(function() {
-                // RestfulAPI or Socket
-                socket.emit('help', "me")
-            });
-
-            $('#btn_submit').click(function() {
-                // RestfulAPI or SOcket
-                socket.emit('submit', "it")
-            })
-            
             /**
             *   Socket 관련 로직
             */
@@ -107,34 +110,6 @@
             function emitCodeUpdate(code) {
                 socket.emit('code', code);
             }
-            
-            
-            /**
-            *   코드 에디터 초기화.
-            */
-            
-             myCodeMirror = CodeMirror(document.getElementById("txt-code-client") ,{
-                lineNumbers: true,
-                mode:  "python",
-                showCursorWhenSelecting: false
-            });
-            myCodeMirror.setValue("");
-
-            partnerCodeMirror = CodeMirror(document.getElementById("txt-code-partner"), {
-                lineNumbers: true,
-                mode:  "python",
-                showCursorWhenSelecting: false
-            });
-            
-
-            /**
-            *   코드 에디터 동작
-            */
-            $("#txt-code-client textarea").keyup(function() {
-                /* Emiit */
-//                partnerCodeMirror.setValue(myCodeMirror.getValue());
-                emitCodeUpdate(myCodeMirror.getValue());
-            })
         })
 
     </script>
