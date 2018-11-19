@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <title></title>
+</head>
+<body>
+    <h1>Login Page<span id="clientName"></span></h1>
+    <div class="container" id="CONTENTS">
+        <div class="card">
+            <div class="card-content">
+                //상태확인용 태그
+                <span Id="AUTH_STATE" class="blue-text"></span>
+                
+            </div>
+            <div class="card-action">
+                //로그인버튼
+                <button Id="BTN_GOOGLE_LOGIN" type="button" class="btn indigo"></button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
+<script src="=fireinin.js"></script>
+
+
+ 
+ <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAIKmgHDqybftQ8-Tnedb4yT6ZyVU1t_Zk",
+    authDomain: "modooui-coding.firebaseapp.com",
+    databaseURL: "https://modooui-coding.firebaseio.com",
+    projectId: "modooui-coding",
+    storageBucket: "modooui-coding.appspot.com",
+    messagingSenderId: "198761911109"
+  };
+  firebase.initializeApp(config);
+    
+    
+            function login(){
+      function newLoginHappened(user){
+          if (user){
+              //user signed in
+              app(user);
+          }
+          else{
+              var provider=new firebase.auth.GoogleAuthProvider();
+              firebase.auth().signInWithRedirect(provider);
+          }
+      }
+      
+      firebase.auth().onAuthStateChanged(newLoginHappened);
+  }
+      
+  function app(user){
+      //user.displayName
+      //user.email
+      //user.photoURL
+      //user.uid
+      document.getElementById("clientName").innerHTML=user.displayName;
+  }  
+    
+  window.onload=login;
+    
+</script>
+
+</html>
