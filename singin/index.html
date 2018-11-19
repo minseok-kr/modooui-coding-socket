@@ -3,22 +3,33 @@
     <head>
         <meta charset="utf-8">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        
+        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
 
         <title></title>
     </head>
     <body>
-        <h1>Login Page<span id="clientName"></span></h1>
+     
+     
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">모두의 코딩</a>
+                </div>
+            </div>
+        </nav>
+      <div class="jumbotron"></div>
+       <div class="container">
+            <h1><span id="clientName">Login </span></h1>
         <div class="container" id="CONTENTS">
 
-            <div class="card">
-                <div class="card-content">
-                    로그인상태:
+            <div class="card col-md-8">
+                <div class="card-body">
+                    <span>로그인상태:</span>
                     <span id="AUTH_STATE" class="blue-text"></span>
 
-                </div>
-                <div class="card-action">
+                    <button id="BTN_GOOGLE_LOGIN" type="button" class="button indigo">구글인증</button>
 
-                    <button id="BTN_GOOGLE_LOGIN" type="button" class="btn indigo">구글인증</button>
                 </div>
             </div>
         </div>
@@ -26,11 +37,12 @@
         <footer clas="page-footer indigo">
             <div class="container">
                 <div class="row center">
-                    <a href="/firebase.html" class="btn white indigo-text">돌아가기</a>
+                    <a href="/" class="btn white indigo-text">돌아가기</a>
                 </div>
             </div>
 
         </footer>
+       </div>
     </body>
     <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
@@ -70,7 +82,7 @@
             //user.email
             //user.photoURL
             //user.uid
-            document.getElementById("clientName").innerHTML=user.displayName;
+            document.getElementById("clientName").innerHTML= "Hello, " + user.displayName;
         }  
 
         window.onload=login;
@@ -81,7 +93,9 @@
                 var provider=new firebase.auth.GoogleAuthProvider();
 
                 firebase.auth().signInWithPopup(provider).then(function(result){
-                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
+//                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
+                    
+                    window.loation.href = "/";
 
                 }).catch(function(error){
                     alert(error.message)
