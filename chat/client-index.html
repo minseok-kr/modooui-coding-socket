@@ -7,8 +7,10 @@
         <!--    <script src="./js/client.js"></script>-->
         <!--    <script src="./js/manager.js"></script>-->
 
+        <title>모두의 코딩</title>
+
         <!-- Code Mirror -->
-        <link rel="stylesheet" href='css/code-mirror-style.css' />
+        <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
 
         <!--        Highlighting -->
@@ -23,24 +25,41 @@
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
 
-        <link href="css/styles.css" rel="stylesheet" type='text/css'/>
+        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+
+        <link href="/asset/css/styles.css" rel="stylesheet" type='text/css'/>
     </head>
 
     <body>
-        <p id='send-state'></p>
-        
-        <h1>Client</h1>
-        <div id="wrapper-code">
-            <div id="txt-code-client"></div>
-        </div>
-        
-        <button id='button'>보내기</button>
 
-        <button id='btn_help'>도움 요청</button>
-        <button id='btn_submit'>제출</button>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">모두의 코딩</a>
+                </div>
+            </div>
+        </nav>
+       <div class="jumbotron">
+           
+       </div>
+        <div class="container">
+            <p id='send-state'></p>
+
+            <h1>Client</h1>    
+
+            <div id="wrapper-code">
+                <div id="txt-code-client"></div>
+            </div>
+
+<!--            <button id='button'>보내기</button>-->
+
+            <button id='btn_help' class="btn btn-danger">도움 요청</button>
+            <button id='btn_submit' class="btn btn-success" >제출</button>
+        </div>
+
 
     </body>
-    
+
     <script>
         /* Socket.io 초기 설정 */
         $(function () {
@@ -81,7 +100,7 @@
                 // RestfulAPI or SOcket
                 socket.emit('submit', "it")
             })
-            
+
             /**
             *   Socket 관련 로직
             */
@@ -92,12 +111,12 @@
             function emitCodeUpdate(code) {
                 socket.emit('code', code);
             }
-            
+
             /**
             *   코드 에디터 초기화.
             */
-            
-             myCodeMirror = CodeMirror(document.getElementById("txt-code-client") ,{
+
+            myCodeMirror = CodeMirror(document.getElementById("txt-code-client") ,{
                 lineNumbers: true,
                 mode:  "python",
                 showCursorWhenSelecting: false

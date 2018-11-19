@@ -8,8 +8,11 @@
         <!--    <script src="./js/client.js"></script>-->
         <!--    <script src="./js/manager.js"></script>-->
 
+        <title>모두의 코딩</title>
+
         <!-- Code Mirror -->
-        <link rel="stylesheet" href='css/code-mirror-style.css' />
+        <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
 
         <!--        Highlighting -->
@@ -21,26 +24,38 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/python/python.min.js" ></script>
 
 
+        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
 
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
         <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
 
-        <link href="css/styles.css" rel="stylesheet" type='text/css'/>
+        <link href="/asset/css/styles.css" rel="stylesheet" type='text/css'/>
     </head>
 
     <body>
-        <p id='send-state'></p>
 
-        <h1>Partner</h1>
-        <div id="wrapper-code">
-            <div id="txt-code-manager"></div>
-        </div>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">모두의 코딩</a>
+                </div>
+            </div>
+        </nav>
+        <div class="jumbotron"></div>
+        <div class="container">
+            <p id='send-state'></p>
 
-        <button id='button'>보내기</button>
+            <h1>Partner</h1>
+            <div id="wrapper-code">
+                <div id="txt-code-manager"></div>
+            </div>
 
-        <div id="container-manager-control" style="display: none;">
-            <button id='btn_success'>성공</button>
-            <button id='btn_failure'>실패</button>    
+<!--            <button id='button'>보내기</button>-->
+
+            <div id="container-manager-control" style="display: none;">
+                <buttonid='btn_success'>성공</button>
+                <button id='btn_failure'>실패</button>    
+            </div>
         </div>
 
     </body>
@@ -85,7 +100,7 @@
 
                 $codeEidtor.removeClass('helpped_client');
                 $codeEidtor.removeClass('submitted_client');
-                
+
                 $codeEidtor.css({backgroundColor: "#FFFF0050"});
                 $codeEidtor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);    
             });
