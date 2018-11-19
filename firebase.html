@@ -1,82 +1,95 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <title></title>
-</head>
-<body>
-    <h1>Login Page<span id="clientName"></span></h1>
-    <div class="container" id="CONTENTS">
-      
-        <div class="card">
-            <div class="card-content">
-                로그인상태:
-                <span id="AUTH_STATE" class="blue-text"></span>
-                
-            </div>
-            <div class="card-action">
-                
-                <button Id="BTN_GOOGLE_LOGIN" type="button" class="btn indigo">구글인증</button>
-            </div>
-        </div>
-    </div>
-    
-    <footer clas="page-footer indigo">
-        <div class="container">
-            <div class="row center">
-                <a href="/firebase.html" class="btn white indigo-text">돌아가기</a>
+        <title></title>
+    </head>
+    <body>
+        <h1>Login Page<span id="clientName"></span></h1>
+        <div class="container" id="CONTENTS">
+
+            <div class="card">
+                <div class="card-content">
+                    로그인상태:
+                    <span id="AUTH_STATE" class="blue-text"></span>
+
+                </div>
+                <div class="card-action">
+
+                    <button id="BTN_GOOGLE_LOGIN" type="button" class="btn indigo">구글인증</button>
+                </div>
             </div>
         </div>
-    
-    </footer>
-</body>
-<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
-<script src="=fireinin.js"></script>
+
+        <footer clas="page-footer indigo">
+            <div class="container">
+                <div class="row center">
+                    <a href="/firebase.html" class="btn white indigo-text">돌아가기</a>
+                </div>
+            </div>
+
+        </footer>
+    </body>
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
 
 
- 
- <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyAIKmgHDqybftQ8-Tnedb4yT6ZyVU1t_Zk",
-    authDomain: "modooui-coding.firebaseapp.com",
-    databaseURL: "https://modooui-coding.firebaseio.com",
-    projectId: "modooui-coding",
-    storageBucket: "modooui-coding.appspot.com",
-    messagingSenderId: "198761911109"
-  };
-  firebase.initializeApp(config);
-    
-    
-            function login(){
-      function newLoginHappened(user){
-          if (user){
-              //user signed in
-              app(user);
-          }
-          else{
-              var provider=new firebase.auth.GoogleAuthProvider();
-              firebase.auth().signInWithRedirect(provider);
-          }
-      }
-      
-      firebase.auth().onAuthStateChanged(newLoginHappened);
-  }
-      
-  function app(user){
-      //user.displayName
-      //user.email
-      //user.photoURL
-      //user.uid
-      document.getElementById("clientName").innerHTML=user.displayName;
-  }  
-    
-  window.onload=login;
-    
-</script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAIKmgHDqybftQ8-Tnedb4yT6ZyVU1t_Zk",
+            authDomain: "modooui-coding.firebaseapp.com",
+            databaseURL: "https://modooui-coding.firebaseio.com",
+            projectId: "modooui-coding",
+            storageBucket: "modooui-coding.appspot.com",
+            messagingSenderId: "198761911109"
+        };
+        firebase.initializeApp(config);
+
+
+        function login(){  
+            firebase.auth().onAuthStateChanged(newLoginHappened);
+        }
+
+        function newLoginHappened(user){
+            if (user){
+                //user signed in
+                app(user);
+            }
+            else{
+                var provider=new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithRedirect(provider);
+            }
+        }
+
+        function app(user){
+            //user.displayName
+            //user.email
+            //user.photoURL
+            //user.uid
+            document.getElementById("clientName").innerHTML=user.displayName;
+        }  
+
+        window.onload=login;
+
+
+        $(function() {
+            $("#BTN_GOOGLE_LOGIN").click(function(){
+                var provider=new firebase.auth.GoogleAuthProvider();
+
+                firebase.auth().signInWithPopup(provider).then(function(result){
+                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
+
+                }).catch(function(error){
+                    alert(error.message)
+                });  
+            })
+        });
+
+
+    </script>
 
 </html>
