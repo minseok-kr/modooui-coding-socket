@@ -20,11 +20,14 @@
         </nav>
         <div class="jumbotron"></div>
         <div class="container">
-            <h1><span id="clientName">Login </span></h1>
+            <h1 id="title-login">Login</h1>
             <div class="container" id="CONTENTS">
 
                 <div class="card col-md-8">
                     <div class="card-body">
+                     <h3 id="clientName"></h3>
+                      <img id="client-image" class="img-circle" width="150" height="150"/>
+                       <br/>
                         <span>로그인상태:</span>
                         <span id="AUTH_STATE" class="blue-text"></span>
 
@@ -82,7 +85,9 @@
             //user.email
             //user.photoURL
             //user.uid
-            document.getElementById("clientName").innerHTML= "Hello, " + user.displayName;
+            $("#clientName").html("Hello, " + user.displayName);
+            $("#client-image").attr("src", user.photoURL)
+            $("#title-login").hide()
         }  
 
         window.onload=login;
