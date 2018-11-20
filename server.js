@@ -11,7 +11,7 @@ const app = express();
 const server = require('http').createServer(app);
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, '.')));
+app.use(express.static(path.join(__dirname, 'site')));
 
 server.listen(port, () => console.log('>>> http://localhost:' + port));
 
@@ -24,25 +24,28 @@ sokectConnector.initSocket(server);
 var name = "";
 
 /* URL */
+
+let siteurl = __dirname + "/site/" 
+
 app.get('/client', function(req, res) {
-    res.sendFile(__dirname + '/chat/client-index.html');
+    res.sendFile(siteurl + 'chat/client-index.html');
 })
 
 app.get('/manage', function(req, res) {
-    res.sendFile(__dirname + '/chat/manager-index.html');
+    res.sendFile(siteurl + 'chat/manager-index.html');
 })
 
 
 app.get('/login', function(req, res) {
-    res.sendFile(__dirname + '/singin/index.html');
+    res.sendFile(siteurl + 'singin/index.html');
 })
 
 app.get('/newchannel', function(req, res) {
-    res.sendFile(__dirname + '/channel/index.html');
+    res.sendFile(siteurl + 'channel/index.html');
 })
 
 app.get('/problems', function(req, res) {
-    res.sendFile(__dirname + '/problems/index.html');
+    res.sendFile(siteurl + 'problems/index.html');
 })
 
 
