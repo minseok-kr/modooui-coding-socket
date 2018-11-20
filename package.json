@@ -4,7 +4,7 @@
   "engines": {
     "node": "6.2.0"
   },
-  "description": "",
+  "description": "## 작동시키는 법 (Mac 기준) 1. terminal을 실행 2. `node server.js`를 이용하여 서버 실행 (nodejs가 설치 안되어있다면 설치 하셔야 합니다!) 3. 브라우저에서 `localhost:3000`에 접속 4. 브라우저에서 테스트!",
   "main": "index.js",
   "scripts": {
     "start": "node server.js"
@@ -13,7 +13,32 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.13.4",
+<<<<<<< HEAD
+    "express": "^4.16.4",
+    "firebase": "^5.5.8",
+    "firebase-app": "0.0.1",
+    "firebase-auth": "^0.1.2",
+    "init": "^0.1.2",
+    "login": "^0.8.0",
+    "nconf": "^0.10.0",
+    "node-pre-gyp": "^0.12.0",
     "socket.io": "^1.4.6"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minseok-kr/modooui-coding-socket.git"
+  },
+  "bugs": {
+    "url": "https://github.com/minseok-kr/modooui-coding-socket/issues"
+  },
+  "homepage": "https://github.com/minseok-kr/modooui-coding-socket#readme"
+=======
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.10",
+    "mongoose": "^5.3.12",
+    "socket.io": "^2.1.1"
   }
+>>>>>>> 8f0507c13fb76287f66f69ee2f4c10ae782a4729
 }
