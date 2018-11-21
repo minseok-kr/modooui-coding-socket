@@ -90,15 +90,17 @@
             /**
                 *   제출, 완료
                 */
-
             $('#btn_help').click(function() {
                 // RestfulAPI or Socket
                 socket.emit('help', "me")
+                toast("도움을 요청합니다.", "failure");
             });
 
             $('#btn_submit').click(function() {
                 // RestfulAPI or SOcket
+                // RestfulAPI or Socket
                 socket.emit('submit', "it")
+                toast("제출하였습니다.", "success");
             })
 
             /**
@@ -131,6 +133,37 @@
                 emitCodeUpdate(myCodeMirror.getValue());
             })
         })
+
+        function toast(message, type = "") {
+            
+            let template = "";
+            if (type == "success") {
+                template = getSuccessToast(message);
+            } else if (type == "failure") {
+                template = getFailToast(message);
+            } else {
+                template = getWarningToast(message);
+            }
+            
+            $('#section-dialogs').append(template);    
+            
+            // 특정 시간 후 삭제
+            setTimeout(function() {
+                $('#section-dialogs').children().first().remove() 
+            }, 2000)
+        }
+
+        let getWarningToast = function(str) {
+            return '<div class="alert alert-warning col-md-8" role="alert">' + str + '</div>'
+        }
+        
+        let getSuccessToast = function(str) {
+            return '<div class="alert alert-success col-md-8" role="alert">' + str + '</div>'
+        } 
+        
+        let getFailToast = function(str) {
+            return '<div class="alert alert-danger col-md-8" role="alert">' + str + '</div>'
+        }
 
     </script>
 
