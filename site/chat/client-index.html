@@ -9,8 +9,12 @@
 
         <title>모두의 코딩</title>
 
+        <link rel="stylesheet" href='/asset/css/common.css'/>
+        <link rel="stylesheet" href='/asset/css/client-code.css'/>
+
         <!-- Code Mirror -->
         <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
 
         <!--        Highlighting -->
@@ -32,33 +36,122 @@
 
     <body>
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">모두의 코딩</a>
+                <a class="navbar-brand" href="/">모두의 코딩</a>
+
+                <div class="mr-auto"></div>
+                <div id="nav-profile">
+
+                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
+                    <span id="nav-client-name">박민석</span>
                 </div>
             </div>
         </nav>
-       <div class="jumbotron">
-           
-       </div>
+
         <div class="container">
+
+
             <p id='send-state'></p>
 
-            <h1>Client</h1>    
+            <h1>Client</h1>
+
+            <div id="section-problem-info" class="row">
+
+                <div class="col col-md-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">문제</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>   
+                </div>
+
+                <div class="col col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">예상 입력</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">예상 출력</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>   
+                </div> 
+            </div>
 
             <div id="wrapper-code">
                 <div id="txt-code-client"></div>
             </div>
 
-<!--            <button id='button'>보내기</button>-->
+            <div id="section-problem-control">
+                <button id='btn_help' class="btn btn-danger">도움 요청</button>
+                <button id='btn_submit' class="btn btn-success" >제출</button>
+                <button id='btn_build' class="btn btn-warning">빌드</button>
+                <button id='btn_check' class="btn btn-info">채점</button>
 
-            <button id='btn_help' class="btn btn-danger">도움 요청</button>
-            <button id='btn_submit' class="btn btn-success" >제출</button>
+            </div>
+            <div id="section-problem-result">
+                <div id='code-status'>
+                    <span class='txt-code-status'></span>
+                    <p class='txt-code-status-log'></p>
+                </div>
+
+                <div id="status-result" class="row">
+                    <div class="col">
+                        <div class='card md-3' style="margin-right:5px">
+                            <div class="card-body">
+                                <div class="card-title">빌드상태</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">stdout</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>    
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">stderr</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">error</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>    
         </div>
 
 
     </body>
+
+    <div id="dialog_chat"></div>
+
+    <div id="section-dialogs">
+
+
+    </div>
+
 
     <script>
         /* Socket.io 초기 설정 */
@@ -67,7 +160,7 @@
             var sendStatus = document.getElementById('send-state');
 
             socket.on('connection', function (data) {
-                sendStatus.innerHTML = data;
+                //                sendStatus.innerHTML = data;
 
             });
 
@@ -97,10 +190,42 @@
             });
 
             $('#btn_submit').click(function() {
-                // RestfulAPI or SOcket
                 // RestfulAPI or Socket
                 socket.emit('submit', "it")
                 toast("제출하였습니다.", "success");
+            })
+
+            $('#section-dialogs').on({
+
+            })
+
+            // 빌드: 에러체크
+            $('#btn_build').click(function() {
+                // request
+            })
+
+            // 채점: 아웃풋과 문제의 아웃풋이 맞는지 비교
+            $('#btn_build').click(function() {
+                $('.txt-code-status').html("제출하였습니다.");
+                
+                toast("빌드 중...", "warning");
+
+                var code = myCodeMirror.getValue();
+                $.post("/checkcode", { "code": code }, function(data) {
+                    console.log(data);
+                    if (data.status.includes("성공")) {
+                        toast("빌드 성공.", "success")
+                    } else if (data.status.includes("실패")) {
+                        toast("빌드 실패.", "failure")
+                    }
+                    
+                    
+                    $('#status-result .card-text')[0].innerHTML = data.status;
+                    $('#status-result .card-text')[1].innerHTML = data.stdout;
+                    $('#status-result .card-text')[2].innerHTML = data.stderr;
+                    $('#status-result .card-text')[3].innerHTML = JSON.stringify(data.error);
+                });
+
             })
 
             /**
