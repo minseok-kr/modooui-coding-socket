@@ -32,6 +32,12 @@ exports.onEvent = function(io) {
             socket.broadcast.emit('somebodySubmit', data)
         });
         
+        
+        socket.on('submitAnswer', (data) => {
+            console.log("Submit but Awnser is " + data);
+            
+            socket.broadcast.emit('submitResult', data);
+        });
 
         /* 웹페이지를 닫았을때 뒤 함수 호출*/
         socket.on('disconnect', () => console.log('Client disconnected'));

@@ -7,11 +7,14 @@
         <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js" integrity="sha256-H28SdxWrZ387Ldn0qogCzFiUDDxfPiNIyJX7BECQkDE=" crossorigin="anonymous"></script>
         <!--    <script src="./js/client.js"></script>-->
         <!--    <script src="./js/manager.js"></script>-->
-
+        
+        <script src="../asset/js/common.js"></script>
+        
         <title>모두의 코딩</title>
 
         <!-- Code Mirror -->
         <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
+        <link rel="stylesheet" href='/asset/css/common.css' />
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
 
@@ -34,7 +37,7 @@
 
     <body>
 
-         <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="/">모두의 코딩</a>
 
@@ -55,11 +58,10 @@
                 <div id="txt-code-manager"></div>
             </div>
 
-<!--            <button id='button'>보내기</button>-->
-
-            <div id="container-manager-control" style="display: none;">
-                <buttonid='btn_success'>성공</button>
-                <button id='btn_failure'>실패</button>    
+            <div id="container-control" style="display: none;">
+                <button id='btn_fail' class='btn btn-danger'>실패</button>    
+                <button id='btn_success' class='btn btn-success'>성공
+                </button>
             </div>
         </div>
 
@@ -67,32 +69,24 @@
 
     <script>
 
-        /**
-            *   코드 에디터 초기화.
-            */
-        partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager"), {
-            lineNumbers: true,
-            mode:  "python",
-            showCursorWhenSelecting: false
-        });
-
-        /**
-            *   코드 에디터 동작
-            */
-        $("#txt-code-manager textarea").keyup(function() {
-            /* Emit */
-            //                emitCodeUpdate(myCodeMirror.getValue());
-        })
-
-
         /* Socket.io 초기 설정 */
         $(function () {
+             /**
+            *   코드 에디터 초기화.
+            */
+            partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager"), {
+                lineNumbers: true,
+                mode:  "python",
+                showCursorWhenSelecting: false
+            });
+            
+            
+            
             var socket = io();
             var sendStatus = document.getElementById('send-state');
 
             socket.on('connection', function (data) {
                 sendStatus.innerHTML = data;
-
             });
 
             socket.on('newMessage', (data) => {
@@ -100,24 +94,29 @@
             });
 
             socket.on('codeUpdate', (data) => {
-                $codeEidtor = $("#wrapper-code");
+                $codeEditor = $("#wrapper-code");
                 partnerCodeMirror.setValue(data);
 
-                $codeEidtor.removeClass('helpped_client');
-                $codeEidtor.removeClass('submitted_client');
+                $codeEditor.removeClass('helpped_client');
+                $codeEditor.removeClass('submitted_client');
 
-                $codeEidtor.css({backgroundColor: "#FFFF0050"});
-                $codeEidtor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);    
+                $codeEditor.css({backgroundColor: "#FFFF0050"});
+                $codeEditor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);    
+
+                // 업데이트시 제출 취소
+                hideControlBox();
             });
 
             socket.on('somebodyHelp', (data) => {
                 $("#wrapper-code").addClass('helpped_client');
-                $codeEidtor.css({backgroundColor: "red"});
+                $codeEditor.css({backgroundColor: "red"});
             });    
 
             socket.on('somebodySubmit', (data) => {
                 $("#wrapper-code").addClass('submitted_client');
-                $codeEidtor.css({backgroundColor: "blue"});
+                $codeEditor.css({backgroundColor: "blue"});
+                
+                showControlBox();
             });
 
             /**
@@ -130,6 +129,29 @@
             function emitCodeUpdate(code) {
                 socket.emit('code', code);
             }
+
+            function emitSubmitAnswer(answer) {
+                socket.emit('submitAnswer', answer);
+            }
+
+            /**
+            *   코드 에디터 동작
+            */
+            $("#txt-code-manager textarea").keyup(function() {
+                /* Emit */
+                //                emitCodeUpdate(myCodeMirror.getValue());
+            })
+
+            $("#btn_success").click(function() {
+                emitSubmitAnswer("success");
+                hideControlBox();
+            })
+
+            $("#btn_fail").click(function() {
+                emitSubmitAnswer("fail");
+                hideControlBox();
+            })
+
         })
 
     </script>

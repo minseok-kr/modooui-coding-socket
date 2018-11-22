@@ -6,6 +6,8 @@
                 crossorigin="anonymous"></script>
         <!--    <script src="./js/client.js"></script>-->
         <!--    <script src="./js/manager.js"></script>-->
+        
+        <script src="../asset/js/common.js"></script>
 
         <title>모두의 코딩</title>
 
@@ -50,10 +52,6 @@
         </nav>
 
         <div class="container">
-
-
-            <p id='send-state'></p>
-
             <h1>Client</h1>
 
             <div id="section-problem-info" class="row">
@@ -89,19 +87,13 @@
                 <div id="txt-code-client"></div>
             </div>
 
-            <div id="section-problem-control">
+            <div id="container-control">
                 <button id='btn_help' class="btn btn-danger">도움 요청</button>
-                <button id='btn_submit' class="btn btn-success" >제출</button>
                 <button id='btn_build' class="btn btn-warning">빌드</button>
-                <button id='btn_check' class="btn btn-info">채점</button>
+                <button id='btn_submit' class="btn btn-info" disabled>제출</button>
 
             </div>
             <div id="section-problem-result">
-                <div id='code-status'>
-                    <span class='txt-code-status'></span>
-                    <p class='txt-code-status-log'></p>
-                </div>
-
                 <div id="status-result" class="row">
                     <div class="col">
                         <div class='card md-3' style="margin-right:5px">
@@ -147,10 +139,7 @@
 
     <div id="dialog_chat"></div>
 
-    <div id="section-dialogs">
-
-
-    </div>
+    <div id="section-dialogs"></div>
 
 
     <script>
@@ -160,8 +149,7 @@
             var sendStatus = document.getElementById('send-state');
 
             socket.on('connection', function (data) {
-                //                sendStatus.innerHTML = data;
-
+                socket.emit('join', { type: "client"})
             });
 
             socket.on('newMessage', (data) => {
@@ -179,6 +167,14 @@
                 $("#txt-code-manager").addClass('block_update');
                 $("#txt-code-client textarea").attr("disabled", true);
             });
+            
+            socket.on('submitResult', (data) => {
+               if (data == "success")  {
+                   toast('성공했습니다.', data);
+               } else if (data == "fail") {
+                   toast('실패했습니다.', data);
+               }
+            });
 
             /**
                 *   제출, 완료
@@ -186,14 +182,8 @@
             $('#btn_help').click(function() {
                 // RestfulAPI or Socket
                 socket.emit('help', "me")
-                toast("도움을 요청합니다.", "failure");
+                toast("도움을 요청합니다. 기다려주세요...", "fail");
             });
-
-            $('#btn_submit').click(function() {
-                // RestfulAPI or Socket
-                socket.emit('submit', "it")
-                toast("제출하였습니다.", "success");
-            })
 
             $('#section-dialogs').on({
 
@@ -201,31 +191,32 @@
 
             // 빌드: 에러체크
             $('#btn_build').click(function() {
-                // request
-            })
-
-            // 채점: 아웃풋과 문제의 아웃풋이 맞는지 비교
-            $('#btn_build').click(function() {
-                $('.txt-code-status').html("제출하였습니다.");
-                
                 toast("빌드 중...", "warning");
 
                 var code = myCodeMirror.getValue();
-                $.post("/checkcode", { "code": code }, function(data) {
+                $.post("/build", { "code": code }, function(data) {
                     console.log(data);
-                    if (data.status.includes("성공")) {
+                    if (data.status.includes("success")) {
                         toast("빌드 성공.", "success")
-                    } else if (data.status.includes("실패")) {
-                        toast("빌드 실패.", "failure")
+                        
+                        $('#btn_submit').removeAttr('disabled');
+                    } else if (data.status.includes("fail")) {
+                        toast("빌드 실패.", "fail")
+                        $('#btn_submit').Attr('disabled', true);
                     }
-                    
-                    
+
+
                     $('#status-result .card-text')[0].innerHTML = data.status;
                     $('#status-result .card-text')[1].innerHTML = data.stdout;
                     $('#status-result .card-text')[2].innerHTML = data.stderr;
                     $('#status-result .card-text')[3].innerHTML = JSON.stringify(data.error);
                 });
+            })
 
+            // 채점: 아웃풋과 문제의 아웃풋이 맞는지 비교
+            $('#btn_submit').click(function() {
+                toast("제출하였습니다. 기다려주세요...");
+                socket.emit('submit', "it");
             })
 
             /**
@@ -256,38 +247,27 @@
             $("#txt-code-client textarea").keyup(function() {
                 /* Emmit */
                 emitCodeUpdate(myCodeMirror.getValue());
+                
+                $('#btn_submit').Attr('disabled', true);
             })
         })
 
         function toast(message, type = "") {
-            
             let template = "";
             if (type == "success") {
                 template = getSuccessToast(message);
-            } else if (type == "failure") {
+            } else if (type == "fail") {
                 template = getFailToast(message);
             } else {
                 template = getWarningToast(message);
             }
-            
+
             $('#section-dialogs').append(template);    
-            
+
             // 특정 시간 후 삭제
             setTimeout(function() {
                 $('#section-dialogs').children().first().remove() 
             }, 2000)
-        }
-
-        let getWarningToast = function(str) {
-            return '<div class="alert alert-warning col-md-8" role="alert">' + str + '</div>'
-        }
-        
-        let getSuccessToast = function(str) {
-            return '<div class="alert alert-success col-md-8" role="alert">' + str + '</div>'
-        } 
-        
-        let getFailToast = function(str) {
-            return '<div class="alert alert-danger col-md-8" role="alert">' + str + '</div>'
         }
 
     </script>

@@ -12,3 +12,8 @@
     margin-left: -300px;
     margin-top: 30px;
 }
+
+#container-control {
+    float: right;
+    margin-bottom: 40px;
+}
