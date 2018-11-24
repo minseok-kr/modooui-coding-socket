@@ -194,7 +194,7 @@
                 toast("빌드 중...", "warning");
 
                 var code = myCodeMirror.getValue();
-                $.post("/build", { "code": code }, function(data) {
+                $.post("/api/build", { "code": code }, function(data) {
                     console.log(data);
                     if (data.status.includes("success")) {
                         toast("빌드 성공.", "success")

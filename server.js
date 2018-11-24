@@ -3,7 +3,7 @@
 /* Socket.io 초기화 */
 const express = require('express');
 const path = require('path');
-const MongoClient = require('mongodb').MongoClient;
+// const MongoClient = require('mongodb').MongoClient;
 const socketIO = require('socket.io');
 const app = express();
 const server = require('http').createServer(app);
@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 /* Custom Modules */
 const eventer = require('./module/eventer.js');
 const codeChecker = require('./module/checker.js');
+const invitator = require('./module/invitator.js');
 
 app.use(express.static(path.join(__dirname, 'site')));
 app.use(bodyParser.json());
@@ -52,7 +53,7 @@ app.get('/problems', function(req, res) {
 /**
 *   메인 기능.
 */
-app.post('/build', function(req,res) {
+app.post('/api/build', function(req,res) {
     console.log("someone try to compile code.")
     console.log(req.body);
     let code = req.body.code;
@@ -64,7 +65,7 @@ app.post('/build', function(req,res) {
     });
 })
 
-app.post('/confirmCode', function(req, res) {
+app.post('/api/confirmCode', function(req, res) {
     //    let roomNum = req.body.room;
 
     let code = req.body.code;
@@ -80,5 +81,39 @@ app.post('/confirmCode', function(req, res) {
             //            notifier.re
         }
     })
+})
+
+app.get('/api/invite/generate', function(req, res) {
+    let inviteCode = invitator.generateInviteCode()
+
+    console.log(Date() + ": Generate Invite Code." + inviteCode);
+
+    res.json({code: inviteCode})
+})
+
+app.get('/v/:code', function(req, res) {
+    console.log(req.url)
+    let inviteCode = req.params.code
+
+    console.log("======")
+    console.log(req.url);
+    console.log(req.params.code);
+    console.log("======")
+    if (inviteCode == 'undefinded') {
+        res.redirect('/invite/error.html');
+        return
+    }
+
+    res.redirect('/invite/?' + inviteCode);
+})
+
+app.get('/v', function(req, res) {
+    res.redirect('/invite/error.html');
+})
+
+
+
+app.get('', function(req, res) {
+    console.log(req.params.code);
 })
 //app.use(express.static(path.join(__dirname, 'css/styles.css')));

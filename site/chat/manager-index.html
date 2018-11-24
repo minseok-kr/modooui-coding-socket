@@ -54,6 +54,7 @@
             <p id='send-state'></p>
 
             <h1>Partner</h1>
+            <button id="btn_invite" class="btn btn-success">초대링크 생성</button>
             <div id="wrapper-code">
                 <div id="txt-code-manager"></div>
             </div>
@@ -150,6 +151,16 @@
             $("#btn_fail").click(function() {
                 emitSubmitAnswer("fail");
                 hideControlBox();
+            })
+
+            $("#btn_invite").click(function() {
+
+                $.get('/api/invite/generate', function(data) {
+                    console.log(data);
+                    let inviteCode = data.code
+
+                    $("#btn_invite").after("<h3>localhost:3000/v/" + inviteCode + "</h3>");
+                });
             })
 
         })
