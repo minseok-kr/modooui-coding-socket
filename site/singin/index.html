@@ -10,21 +10,28 @@
     </head>
     <body>
 
-
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">모두의 코딩</a>
+                <a class="navbar-brand" href="/">모두의 코딩</a>
+
+                <div class="mr-auto"></div>
+                <div id="nav-profile">
+
+                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
+                    <span id="nav-client-name">박민석</span>
                 </div>
             </div>
         </nav>
         <div class="jumbotron"></div>
         <div class="container">
-            <h1><span id="clientName">Login </span></h1>
+            <h1 id="title-login">Login</h1>
             <div class="container" id="CONTENTS">
 
                 <div class="card col-md-8">
                     <div class="card-body">
+                     <h3 id="clientName"></h3>
+                      <img id="client-image" class="rounded-circle" width="150" height="150"/>
+                       <br/>
                         <span>로그인상태:</span>
                         <span id="AUTH_STATE" class="blue-text"></span>
 
@@ -82,7 +89,9 @@
             //user.email
             //user.photoURL
             //user.uid
-            document.getElementById("clientName").innerHTML= "Hello, " + user.displayName;
+            $("#clientName").html("Hello, " + user.displayName);
+            $("#client-image").attr("src", user.photoURL)
+            $("#title-login").hide()
         }  
 
         window.onload=login;

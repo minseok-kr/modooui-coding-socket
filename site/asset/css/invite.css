@@ -1,0 +1,38 @@
+#section-problem-info {
+    margin-bottom: 40px;
+}
+
+#card-room {
+    margin: 0px auto;
+    width: 300px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 30px;
+}
+
+#card-room * {
+    margin: 0px auto;
+    text-align: center;
+}
+
+h5 {
+    margin-bottom: 5px !important;
+}
+
+h4 {
+    text-align: center;
+}
+
+.info-err {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.img-room {
+    width: 100px;
+    height: 100px;
+}

@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"></script>
+        <!--    <script src="./js/client.js"></script>-->
+        <!--    <script src="./js/manager.js"></script>-->
+        
+        <script src="../asset/js/common.js"></script>
+
+        <title>모두의 코딩</title>
+
+        <link rel="stylesheet" href='/asset/css/common.css'/>
+        <link rel="stylesheet" href='/asset/css/client-code.css'/>
+
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
+
+        <!--        Highlighting -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/runmode/colorize.js" ></script>
+        <!--        Javascript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/javascript/javascript.min.js" ></script>
+
+        <!--        Python -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/python/python.min.js" ></script>
+
+
+        <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
+        <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+
+        <link href="/asset/css/styles.css" rel="stylesheet" type='text/css'/>
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="/">모두의 코딩</a>
+
+                <div class="mr-auto"></div>
+                <div id="nav-profile">
+
+                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
+                    <span id="nav-client-name">박민석</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h1>Client</h1>
+
+            <div id="section-problem-info" class="row">
+
+                <div class="col col-md-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">문제</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>   
+                </div>
+
+                <div class="col col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">예상 입력</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">예상 출력</h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>   
+                </div> 
+            </div>
+
+            <div id="wrapper-code">
+                <div id="txt-code-client"></div>
+            </div>
+
+            <div id="container-control">
+                <button id='btn_help' class="btn btn-danger">도움 요청</button>
+                <button id='btn_build' class="btn btn-warning">빌드</button>
+                <button id='btn_submit' class="btn btn-info" disabled>제출</button>
+
+            </div>
+            <div id="section-problem-result">
+                <div id="status-result" class="row">
+                    <div class="col">
+                        <div class='card md-3' style="margin-right:5px">
+                            <div class="card-body">
+                                <div class="card-title">빌드상태</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>   
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">stdout</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>    
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">stderr</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class='card md-3'>
+                            <div class="card-body">
+                                <div class="card-title">error</div>
+                                <div class="card-text"></div>
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+            </div>    
+        </div>
+
+
+    </body>
+
+    <div id="dialog_chat"></div>
+
+    <div id="section-dialogs"></div>
+
+
+    <script>
+        /* Socket.io 초기 설정 */
+        $(function () {
+            var socket = io();
+            var sendStatus = document.getElementById('send-state');
+
+            socket.on('connection', function (data) {
+                socket.emit('join', { type: "client"})
+            });
+
+            socket.on('newMessage', (data) => {
+                sendStatus.innerHTML = data;
+            });
+
+            socket.on('somebodyHelp', (data) => {
+                $("#txt-code-manager").addClass('helpped_client');
+                $("#txt-code-manager").addClass('block_update');
+                $("#txt-code-client textarea").attr("disabled", true);
+            });    
+
+            socket.on('somebodySubmit', (data) => {
+                $("#txt-code-manager").addClass('submitted_client');
+                $("#txt-code-manager").addClass('block_update');
+                $("#txt-code-client textarea").attr("disabled", true);
+            });
+            
+            socket.on('submitResult', (data) => {
+               if (data == "success")  {
+                   toast('성공했습니다.', data);
+               } else if (data == "fail") {
+                   toast('실패했습니다.', data);
+               }
+            });
+
+            /**
+                *   제출, 완료
+                */
+            $('#btn_help').click(function() {
+                // RestfulAPI or Socket
+                socket.emit('help', "me")
+                toast("도움을 요청합니다. 기다려주세요...", "fail");
+            });
+
+            $('#section-dialogs').on({
+
+            })
+
+            // 빌드: 에러체크
+            $('#btn_build').click(function() {
+                toast("빌드 중...", "warning");
+
+                var code = myCodeMirror.getValue();
+                $.post("/api/build", { "code": code }, function(data) {
+                    console.log(data);
+                    if (data.status.includes("success")) {
+                        toast("빌드 성공.", "success")
+                        
+                        $('#btn_submit').removeAttr('disabled');
+                    } else if (data.status.includes("fail")) {
+                        toast("빌드 실패.", "fail")
+                        $('#btn_submit').Attr('disabled', true);
+                    }
+
+
+                    $('#status-result .card-text')[0].innerHTML = data.status;
+                    $('#status-result .card-text')[1].innerHTML = data.stdout;
+                    $('#status-result .card-text')[2].innerHTML = data.stderr;
+                    $('#status-result .card-text')[3].innerHTML = JSON.stringify(data.error);
+                });
+            })
+
+            // 채점: 아웃풋과 문제의 아웃풋이 맞는지 비교
+            $('#btn_submit').click(function() {
+                toast("제출하였습니다. 기다려주세요...");
+                socket.emit('submit', "it");
+            })
+
+            /**
+            *   Socket 관련 로직
+            */
+            function emitMessage(message) {
+                socket.emit('message', message);
+            }
+
+            function emitCodeUpdate(code) {
+                socket.emit('code', code);
+            }
+
+            /**
+            *   코드 에디터 초기화.
+            */
+
+            myCodeMirror = CodeMirror(document.getElementById("txt-code-client") ,{
+                lineNumbers: true,
+                mode:  "python",
+                showCursorWhenSelecting: false
+            });
+            myCodeMirror.setValue("");            
+
+            /**
+            *   코드 에디터 동작
+            */
+            $("#txt-code-client textarea").keyup(function() {
+                /* Emmit */
+                emitCodeUpdate(myCodeMirror.getValue());
+                
+                $('#btn_submit').Attr('disabled', true);
+            })
+        })
+
+        function toast(message, type = "") {
+            let template = "";
+            if (type == "success") {
+                template = getSuccessToast(message);
+            } else if (type == "fail") {
+                template = getFailToast(message);
+            } else {
+                template = getWarningToast(message);
+            }
+
+            $('#section-dialogs').append(template);    
+
+            // 특정 시간 후 삭제
+            setTimeout(function() {
+                $('#section-dialogs').children().first().remove() 
+            }, 2000)
+        }
+
+    </script>
+
+</html>
