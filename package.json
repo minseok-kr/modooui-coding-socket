@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+<<<<<<< HEAD
     "express": "^4.16.4",
     "firebase": "^5.5.8",
     "firebase-app": "0.0.1",
@@ -22,8 +24,7 @@
     "mongodb": "^3.1.10",
     "nconf": "^0.10.0",
     "node-pre-gyp": "^0.12.0",
-    "socket.io": "^1.4.6",
-    "uuid-v4": "^0.1.0"
+    "socket.io": "^1.4.6"
   },
   "devDependencies": {},
   "repository": {
@@ -34,4 +35,14 @@
     "url": "https://github.com/minseok-kr/modooui-coding-socket/issues"
   },
   "homepage": "https://github.com/minseok-kr/modooui-coding-socket#readme"
+=======
+=======
+>>>>>>> 8f0507c13fb76287f66f69ee2f4c10ae782a4729
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.10",
+    "mongoose": "^5.3.12",
+    "socket.io": "^2.1.1"
+  }
+>>>>>>> 8f0507c13fb76287f66f69ee2f4c10ae782a4729
 }
