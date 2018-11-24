@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "express": "^4.16.4",
     "firebase": "^5.5.8",
     "firebase-app": "0.0.1",
@@ -34,6 +35,8 @@
   },
   "homepage": "https://github.com/minseok-kr/modooui-coding-socket#readme"
 =======
+=======
+>>>>>>> 8f0507c13fb76287f66f69ee2f4c10ae782a4729
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongodb": "^3.1.10",
