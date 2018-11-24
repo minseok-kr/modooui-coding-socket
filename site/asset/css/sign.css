@@ -1,0 +1,35 @@
+
+#card-login {
+    margin: 0px auto;
+    width: 300px;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+#card-login * {
+    margin: 0px auto;
+    text-align: center;
+}
+
+#card-login h5 {
+    margin-bottom: 15px;
+}
+
+.card-container-top {
+    padding-bottom: 0px;
+}
+
+.img-login {
+    width: 100px;
+    height: 100px;
+}
+
+#client-image {
+    width: 100px;
+    height: 100px÷;
+    margin-bottom: 30px;
+}

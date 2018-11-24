@@ -18,6 +18,10 @@ h1 {
     text-align: center;
 }
 
+.card-container-top {
+    padding-bottom: 0px;
+}
+
 h5 {
     margin-bottom: 5px !important;
 }

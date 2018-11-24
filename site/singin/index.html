@@ -1,117 +1,128 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-        <title></title>
-    </head>
-    <body>
+    <link rel="stylesheet" href="../asset/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../asset/css/sign.css" />
+    <meta name="google-signin-client_id" content="198761911109-d320g0rk3hncmchmgbac6dil70eo6gif.apps.googleusercontent.com">
+    <title></title>
+</head>
 
-         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="/">모두의 코딩</a>
+<body>
 
-                <div class="mr-auto"></div>
-                <div id="nav-profile">
-
-                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
-                    <span id="nav-client-name">박민석</span>
-                </div>
-            </div>
-        </nav>
-        <div class="jumbotron"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <h1 id="title-login">Login</h1>
-            <div class="container" id="CONTENTS">
+            <a class="navbar-brand" href="/">모두의 코딩</a>
 
-                <div class="card col-md-8">
-                    <div class="card-body">
-                     <h3 id="clientName"></h3>
-                      <img id="client-image" class="rounded-circle" width="150" height="150"/>
-                       <br/>
-                        <span>로그인상태:</span>
-                        <span id="AUTH_STATE" class="blue-text"></span>
+            <div class="mr-auto"></div>
+            <div id="nav-profile">
 
-                        <button id="BTN_GOOGLE_LOGIN" type="button" class="button indigo">구글인증</button>
+                <img class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg"
+                    width="30" height="30" />
+                <span id="nav-client-name">박민석</span>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron"></div>
+    <div class="container card-container-top">
+        <h1 id="title-login">Login</h1>
+        <div class="container" id="CONTENTS">
 
-                    </div>
+            <div id="card-login" class="card">
+                <div class="card-body">
+                    <h5 id="clientName"></h5>
+                    <img id="client-image" class="rounded-circle"/>
+                    <br />
+                    <button id="BTN_GOOGLE_LOGIN" type="button" class="btn btn-success">구글인증</button>
+
+                    <button id="btn_logout" class="btn btn-danger">로그아웃</button>
+                    <a href="javascript:login()">세션 유지</a>
+                </div>
+            </div>
+        </div>
+
+        <footer clas="page-footer indigo">
+            <div class="container">
+                <div class="row center">
+                    <a href="/" class="btn white indigo-text" style="margin: 0px auto;">돌아가기</a>
                 </div>
             </div>
 
-            <footer clas="page-footer indigo">
-                <div class="container">
-                    <div class="row center">
-                        <a href="/" class="btn white indigo-text">돌아가기</a>
-                    </div>
-                </div>
-
-            </footer>
-        </div>
-    </body>
-    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
+        </footer>
+    </div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.5.8/firebase-auth.js"></script>
 
 
-    <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyAIKmgHDqybftQ8-Tnedb4yT6ZyVU1t_Zk",
-            authDomain: "modooui-coding.firebaseapp.com",
-            databaseURL: "https://modooui-coding.firebaseio.com",
-            projectId: "modooui-coding",
-            storageBucket: "modooui-coding.appspot.com",
-            messagingSenderId: "198761911109"
-        };
-        firebase.initializeApp(config);
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAIKmgHDqybftQ8-Tnedb4yT6ZyVU1t_Zk",
+        authDomain: "modooui-coding.firebaseapp.com",
+        databaseURL: "https://modooui-coding.firebaseio.com",
+        projectId: "modooui-coding",
+        storageBucket: "modooui-coding.appspot.com",
+        messagingSenderId: "198761911109"
+    };
+    firebase.initializeApp(config);
 
 
-        function login(){  
-            firebase.auth().onAuthStateChanged(newLoginHappened);
+    function login() {
+        firebase.auth().onAuthStateChanged(newLoginHappened);
+    }
+
+    function newLoginHappened(user) {
+        if (user) {
+            //user signed in
+            app(user);
         }
-
-        function newLoginHappened(user){
-            if (user){
-                //user signed in
-                app(user);
-            }
-            else{
-                var provider=new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithRedirect(provider);
-            }
+        else {
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider);
         }
+    }
 
-        function app(user){
-            //user.displayName
-            //user.email
-            //user.photoURL
-            //user.uid
-            $("#clientName").html("Hello, " + user.displayName);
-            $("#client-image").attr("src", user.photoURL)
-            $("#title-login").hide()
-        }  
+    function app(user) {
+        //user.displayName
+        //user.email
+        //user.photoURL
+        //user.uid
+        console.log(user);
+        $("#clientName").html("Hello, " + user.displayName);
+        $("#client-image").attr("src", user.photoURL)
+        $("#title-login").hide()
+    }
 
-        window.onload=login;
+    // window.onload=login;
 
 
-        $(function() {
-            $("#BTN_GOOGLE_LOGIN").click(function(){
-                var provider=new firebase.auth.GoogleAuthProvider();
+    $(function () {
+        $("#BTN_GOOGLE_LOGIN").click(function () {
+            var provider = new firebase.auth.GoogleAuthProvider();
 
-                firebase.auth().signInWithPopup(provider).then(function(result){
-                    //                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
-                    window.location.href = "/";
+            firebase.auth().signInWithPopup(provider).then(function (result) {
+                //                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
+                window.location.href = "/";
 
-                }).catch(function(error){
-                    alert(error.message)
-                });  
+            }).catch(function (error) {
+                alert(error.message)
+            });
+        })
+
+        $("#btn_logout").click(function () {
+            firebase.auth().signOut().then(function () {
+                $('#btn_logout').hide();
+                window.location.href = "/";
             })
-        });
+        })
+    });
 
 
-    </script>
+</script>
 
 </html>
