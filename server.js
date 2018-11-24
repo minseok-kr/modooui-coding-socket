@@ -3,7 +3,7 @@
 /* Socket.io 초기화 */
 const express = require('express');
 const path = require('path');
-// const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb').MongoClient('mongodb://localhost:27017');
 const socketIO = require('socket.io');
 const app = express();
 const server = require('http').createServer(app);
@@ -84,11 +84,24 @@ app.post('/api/confirmCode', function(req, res) {
 })
 
 app.get('/api/invite/generate', function(req, res) {
-    let inviteCode = invitator.generateInviteCode()
+    let roomNumber = req.params.room;
 
-    console.log(Date() + ": Generate Invite Code." + inviteCode);
+    // TODO: Test
+    roomNumber = 1;
 
-    res.json({code: inviteCode})
+    invitator.generateInviteCode(mongodb, roomNumber, function(invitation) {
+        console.log(invitation);
+
+        if (invitation.code == -9) {
+            console.log(Date() + ": Room " + roomNumber + ". already has iviteCode " +  + invitation.code);
+    
+            res.json(invitation)
+        } else {
+            console.log(Date() + ": Generate Invite Code." + invitation.code);
+    
+            res.json(invitation)
+        }
+    })
 })
 
 app.get('/v/:code', function(req, res) {
