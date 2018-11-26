@@ -47,13 +47,13 @@
                     <div class="form-group">
                         <input type="email" class="form-control" id="input-name" aria-describedby="emailHelp"
                             placeholder="스터디 이름">
-                        <small id="emailHelp" class="form-text text-muted">스터디 진행시 개설자와 참여에게 표시될 이름입니다.</small>
+                        <small class="form-text text-muted">스터디 진행시 개설자와 참여에게 표시될 이름입니다.</small>
                     </div>
 
                     <div class="form-group">
                         <input type="email" class="form-control" id="input-desc" aria-describedby="emailHelp"
                             placeholder="스터디 설명">
-                        <small id="emailHelp" class="form-text text-muted">스터디를 한줄로 설명해주세요.</small>
+                        <small class="form-text text-muted">스터디를 한줄로 설명해주세요.</small>
                     </div>
 
                     <!-- Options -->
@@ -62,30 +62,33 @@
                     <div class="form-group">
                         <input type="email" class="form-control" id="input-problem-desc" aria-describedby="emailHelp"
                             placeholder="문제">
-                        <small id="emailHelp" class="form-text text-muted">참여자들에게 보여질 문제입니다. 문제는 수정 가능합니다.</small>
+                        <small class="form-text text-muted">참여자들에게 보여질 문제입니다. 문제는 수정 가능합니다.</small>
                     </div>
 
                     <div class="form-group">
-                        <input type="email" class="form-control" id="input-problem-input" aria-describedby="emailHelp"
+                        <input type="email" class="form-control id=" input-problem-input" aria-describedby="emailHelp"
                             placeholder="예상 입력">
-                        <small id="emailHelp" class="form-text text-muted">빌드시 입력될 값입니다.</small>
+                        <small class="form-text text-muted">빌드시 입력될 값입니다.</small>
                     </div>
 
                     <div class="form-group">
                         <input type="email" class="form-control" id="input-problem-output" aria-describedby="emailHelp"
                             placeholder="예상 출력">
-                        <small id="emailHelp" class="form-text text-muted">빌드시 참여자들이 만들어야하는 출력입니다.</small>
+                        <small class="form-text text-muted">빌드시 참여자들이 만들어야하는 출력입니다.</small>
                     </div>
                 </form>
 
-                <button class="btn btn-lg btn-success" id="btn_next" style="float: right">들어가기</button>
+                <small id='info-next' class='text-danger' style='display: none'>다시한번 확인해주세요.</small>
+                <button class="btn btn-lg btn-success" id="btn_next" style="float: right">확인하기</button>
             </div>
 
             <div class='card-body' id="card-confirm">
+                <h3>입력하신 정보가 정확하신가요?</h3>
+
                 <form method="POST" action="/api/room/generate">
                     <div class="form-group">
                         <label>스터디 이름</label>
-                        <input type="text" class="form-control" id="study-name" name="name" readonly>
+                        <input type="text" class="form-control" id="study-name" name="name" readonly required>
                     </div>
 
                     <div class="form-group">
@@ -112,8 +115,6 @@
                 </form>
                 <button class="btn btn-lg btn-danger" id="btn_edit" style="float: left;">수정하기</button>
             </div>
-
-
         </div>
 
     </div>
@@ -129,18 +130,27 @@
         let halfScreenWidth = window.outerWidth / 2;
         $('#card-confirm').hide();
         $('#btn_next').click(function () {
-            $('.card-room-edit').stop().animate({
-                right: halfScreenWidth + 200
-            }, 700).animate({
-                right: -(halfScreenWidth + 200)
-            }, 0, null, function () {
-                $('#card-confirm').show();
-                $('#card-edit').hide();
+            onClear();
+            if (onValidate()) {
+                $('.card-room-edit').css({
+                    right: 0
+                }).stop().animate({
+                    right: halfScreenWidth + 200
+                }, 700).animate({
+                    right: -(halfScreenWidth + 200)
+                }, 0, null, function () {
+                    $('#card-confirm').show();
+                    $('#card-edit').hide();
 
-                setInputData();
-            }).animate({
-                right: 0
-            }, 700);
+                    $('.card-container-top').hide();
+
+                    setInputData();
+                }).animate({
+                    right: 0
+                }, 700);
+            } else {
+                $('#info-next').css({ display: 'inline' })
+            }
         })
 
         $('#btn_edit').click(function () {
@@ -151,12 +161,14 @@
             }, 0, null, function () {
                 $('#card-confirm').hide();
                 $('#card-edit').show();
+
+                $('.card-container-top').show();
             }).animate({
                 left: 0
             }, 700);
         })
 
-        $('#btn_confirm').click(function() {
+        $('#btn_confirm').click(function () {
             submit();
         })
 
@@ -166,6 +178,31 @@
             $('#study-problem-desc').val($('#input-problem-desc').val())
             $('#study-problem-input').val($('#input-problem-input').val())
             $('#study-problem-output').val($('#input-problem-output').val())
+        }
+
+        function onValidate() {
+            let isOk = true
+
+            if ($('#input-name').val().length == 0) {
+                $('#input-name').addClass('is-invalid');
+
+                isOk = false;
+            }
+
+            if ($('#input-desc').val().length == 0) {
+                $('#input-desc').addClass('is-invalid');
+
+                isOk = false;
+            }
+
+            return isOk;
+        }
+
+        function onClear() {
+            $('#input-name').removeClass('is-invalid');
+            $('#input-desc').removeClass('is-invalid');
+
+            $('#info-next').css({ display: 'none' })
         }
     </script>
 </body>
