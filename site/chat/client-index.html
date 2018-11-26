@@ -275,7 +275,10 @@
         })
 
         function initRoom() {
-            $.post('/room/getInfo', { "code": 2 }, function(data) {
+            let paths = window.location.href.split('?')
+            let room = paths[1];
+            let clientId = "id";
+            $.post('/room/getInfo', { "code": room, "clientId": clientId }, function(data) {
                 if (data != null) {
                     $('#txt-room-title').html(data.title);
 
@@ -295,8 +298,13 @@
                     //                             problem: { descript: '', input: '', output: '' }
                     // }
                 }
-            }).fail(function() {
-                toast("스터디 정보를 불러오는 중에 문제가 발생했습니다.", "fail");
+            }).fail(function(err) {
+                console.log(err)
+                if (err.status == 401) {
+                    location.href = "/invite/error.html"
+                } else {
+                    toast("스터디 정보를 불러오는 중에 문제가 발생했습니다.", "fail");
+                }
             })
         }
 

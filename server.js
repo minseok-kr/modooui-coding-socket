@@ -115,13 +115,16 @@ app.post('/api/room/generate', function (req, res) {
 // 방 입장
 app.get('/room/:code', function (req, res) {
     let roomNumber = req.params.code;
-    // res.redirect('/client?' + roomNumber);
-    res.redirect('/manage?' + roomNumber);
+    res.redirect('/client?' + roomNumber);
+    // res.redirect('/manage?' + roomNumber);
 })
 
 // 방 입장시 초기화.
 app.post('/room/getInfo', function (req, res) {
+    // TODO: 정보 얻을 자격 있는지 Validate!
+
     let roomNumber = req.body.code;
+    let clientId = req.body.clientId;
     console.log("ROOM: " + roomNumber);
 
     mongodb.connect(function (err) {
@@ -138,6 +141,14 @@ app.post('/room/getInfo', function (req, res) {
             }
 
             if (data != null) {
+                if (data.users.find(function (e) {
+                    return e == clientId;
+                }) == undefined) {
+                    console.log("권한없음")
+                    res.sendStatus(401);
+                    return;
+                }
+                
                 console.log(data);
                 res.json(data);
                 return;
