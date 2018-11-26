@@ -138,22 +138,68 @@ app.get('/api/invite/generate', function (req, res) {
     })
 })
 
-app.get('/v/:code', function (req, res) {
-    console.log(req.url)
-    let inviteCode = req.params.code
-    if (inviteCode == 'undefinded') {
-        res.redirect('/invite/error.html');
-        return
-    }
+app.post('/api/invite/check', function (req, res) {
+    let inviteCode = req.body.code;
 
-    res.redirect('/invite/?' + inviteCode);
+    mongodb.connect(function (err) {
+        if (err != null) return
+        const db = mongodb.db('modoocoding');
+        db.collection('invite').findOne({ code: inviteCode }, function (err, data) {
+            if (err != null) {
+                console.log(err)
+                res.sendStatus(500);
+                return;
+            }
+
+            if (data != null) {
+                console.log(data);
+
+                let curTime = new Date().getTime();
+                if (curTime < data.expire) {
+                    console.log('초대 링크 성공');
+
+                    // 초대 받았다는 세션 추가: 이는 미들웨어에서 검사 예정.
+                    // res.redirect('/invite/' + inviteCode);
+                    db.collection('room').findOne({ "index": data.room }, function (err, roomData) {
+                        if (err != null) {
+                            console.log(err)
+                            res.sendStatus(500);
+                            return;
+                        }
+
+                        if (data != null) {
+                            console.log(roomData)
+                            res.json({ "name": roomData.title, "desc": roomData.description });
+                        } else {
+                            res.sendStatus(500);
+                        }
+                    })
+
+                } else {
+                    console.log('초대 링크 실패: ' + ((curTime - data.expire) / 1000) + "초 경과");
+                    res.sendStatus(500);
+                }
+            } else {
+                res.sendStatus(500);
+            }
+        })
+    })
 })
 
-app.get('/v', function (req, res) {
+// 방 정보에 사용자 등록.
+app.post('/api/invite/join', function (req, res) {
+    // 방 Users에 참여자 추가.
+    // 방으로 이동
+})
+
+app.get('/v/:code', function (req, res) {
+    res.sendFile(siteurl + 'invite/');
+})
+
+app.get('/invite/', function (req, res) {
+    console.log("[2]?????");
     res.redirect('/invite/error.html');
 })
-
-
 
 app.get('', function (req, res) {
     console.log(req.params.code);

@@ -43,8 +43,8 @@
                 <img class="rounded-circle img-room" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" />
             </div>
             <div class="card-body">
-                <h5 class="card-title">오늘만 하는 스터디</h5>
-                <p class="card-text">이것도 하고 저것도 하고 요것도 하고</p><br/>
+                <h5 class="card-title" id="txt-card-title">오늘만 하는 스터디</h5>
+                <p class="card-text" id="txt-card-content">이것도 하고 저것도 하고 요것도 하고</p><br />
                 <a href="/client" class="btn btn-lg btn-success">들어가기</a>
             </div>
         </div>
@@ -58,6 +58,24 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script>
+        $(function () {
+            $('#card-room').hide();
+
+            var pathname = window.location.pathname;
+            paths = pathname.split('/');
+            inviteCode = paths[paths.length - 1];
+
+            $.post('/api/invite/check', { code: inviteCode }, function (data) {
+                if (data) {
+                    console.log("적 " + data)
+                    $('#txt-card-title').html(data.name)
+                    $('#txt-card-content').html(data.desc)
+                    $('#card-room').show();
+                }
+            }).fail(function() {
+                window.location.href = '/invite/error.html'
+            })
+        });
 
     </script>
 </body>
