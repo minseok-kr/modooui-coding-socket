@@ -104,7 +104,7 @@ app.post('/api/room/generate', function (req, res) {
             let maxRoomIndex = num;
             // 방에 설정될 기본 문제.
             let problem = { "descript": reqData.problemDesc, "input": reqData.problemIn, "output": reqData.problemOut }
-            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": "", "users": [""], "problem": problem }
+            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": "id", "users": [""], "problem": problem }
 
             db.collection('room').insertOne(newRoom);
             res.redirect("/room/" + maxRoomIndex);
@@ -115,8 +115,7 @@ app.post('/api/room/generate', function (req, res) {
 // 방 입장
 app.get('/room/:code', function (req, res) {
     let roomNumber = req.params.code;
-    res.redirect('/client?' + roomNumber);
-    // res.redirect('/manage?' + roomNumber);
+    res.redirect('/manage?' + roomNumber);
 })
 
 // 방 입장시 초기화.
@@ -141,9 +140,10 @@ app.post('/room/getInfo', function (req, res) {
             }
 
             if (data != null) {
+                console.log(data);
                 if (data.users.find(function (e) {
                     return e == clientId;
-                }) == undefined) {
+                }) == undefined && data.owner != clientId) {
                     console.log("권한없음")
                     res.sendStatus(401);
                     return;
@@ -165,11 +165,8 @@ app.get('/channel/new', function (req, res) {
 /**
  * 초대 관련 Route 
  */
-app.get('/api/invite/generate', function (req, res) {
-    let roomNumber = req.params.room;
-
-    // TODO: Test
-    roomNumber = 1;
+app.post('/api/invite/generate', function (req, res) {
+    let roomNumber = req.body.room;
 
     invitator.generateInviteCode(mongodb, roomNumber, function (invitation) {
         res.json(invitation)
@@ -194,17 +191,17 @@ app.post('/api/invite/check', function (req, res) {
                 if (curTime < data.expire) {
                     console.log('초대 링크 성공');
 
-                    // 초대 받았다는 세션 추가: 이는 미들웨어에서 검사 예정.
-                    // res.redirect('/invite/' + inviteCode);
-                    db.collection('room').findOne({ "index": data.room }, function (err, roomData) {
+                    console.log(data);
+                    db.collection('room').findOne({ "index": Number(data.room) }, function (err, roomData) {
                         if (err != null) {
                             console.log(err)
                             res.sendStatus(500);
                             return;
                         }
 
-                        if (data != null) {
-                            res.json({ "name": roomData.title, "desc": roomData.description });
+                        console.log(roomData);
+                        if (roomData != null) {
+                            res.json({ "room":  Number(data.room), "name": roomData.title, "desc": roomData.description });
                         } else {
                             res.sendStatus(500);
                         }

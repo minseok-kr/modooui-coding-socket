@@ -1,170 +1,174 @@
 <html>
-    <head>
-        <meta charset="utf-8"/>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-                crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js" integrity="sha256-H28SdxWrZ387Ldn0qogCzFiUDDxfPiNIyJX7BECQkDE=" crossorigin="anonymous"></script>
-        <!--    <script src="./js/client.js"></script>-->
-        <!--    <script src="./js/manager.js"></script>-->
-        
-        <script src="../asset/js/common.js"></script>
-        
-        <title>모두의 코딩</title>
 
-        <!-- Code Mirror -->
-        <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
-        <link rel="stylesheet" href='/asset/css/common.css' />
+<head>
+    <meta charset="utf-8" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js" integrity="sha256-H28SdxWrZ387Ldn0qogCzFiUDDxfPiNIyJX7BECQkDE="
+        crossorigin="anonymous"></script>
+    <!--    <script src="./js/client.js"></script>-->
+    <!--    <script src="./js/manager.js"></script>-->
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js" ></script> 
+    <script src="../asset/js/common.js"></script>
 
-        <!--        Highlighting -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/runmode/colorize.js" ></script>
-        <!--        Javascript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/javascript/javascript.min.js" ></script>
+    <title>모두의 코딩</title>
 
-        <!--        Python -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/python/python.min.js" ></script>
+    <!-- Code Mirror -->
+    <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
+    <link rel="stylesheet" href='/asset/css/common.css' />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.min.js"></script>
+
+    <!--        Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/runmode/colorize.js"></script>
+    <!--        Javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/javascript/javascript.min.js"></script>
+
+    <!--        Python -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/mode/python/python.min.js"></script>
 
 
-        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
 
-        <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
-        <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css' rel='stylesheet' type='text/css'>
+    <link href='https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css' rel='stylesheet' type='text/css'>
 
-        <link href="/asset/css/styles.css" rel="stylesheet" type='text/css'/>
-    </head>
+    <link href="/asset/css/styles.css" rel="stylesheet" type='text/css' />
+</head>
 
-    <body>
+<body>
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="/">모두의 코딩</a>
-
-                <div class="mr-auto"></div>
-                <div id="nav-profile">
-
-                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
-                    <span id="nav-client-name">박민석</span>
-                </div>
-            </div>
-        </nav>
-        <div class="jumbotron"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <p id='send-state'></p>
+            <a class="navbar-brand" href="/">모두의 코딩</a>
 
-            <h1>Partner</h1>
-            <button id="btn_invite" class="btn btn-success">초대링크 생성</button>
-            <div id="wrapper-code">
-                <div id="txt-code-manager"></div>
-            </div>
+            <div class="mr-auto"></div>
+            <div id="nav-profile">
 
-            <div id="container-control" style="display: none;">
-                <button id='btn_fail' class='btn btn-danger'>실패</button>    
-                <button id='btn_success' class='btn btn-success'>성공
-                </button>
+                <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg"
+                    width="30" height="30" />
+                <span id="nav-client-name">박민석</span>
             </div>
         </div>
+    </nav>
+    <div class="jumbotron"></div>
+    <div class="container">
+        <p id='send-state'></p>
 
-    </body>
+        <h1>Partner</h1>
+        <button id="btn_invite" class="btn btn-success">초대링크 생성</button>
+        <div id="wrapper-code">
+            <div id="txt-code-manager"></div>
+        </div>
 
-    <script>
+        <div id="container-control" style="display: none;">
+            <button id='btn_fail' class='btn btn-danger'>실패</button>
+            <button id='btn_success' class='btn btn-success'>성공
+            </button>
+        </div>
+    </div>
 
-        /* Socket.io 초기 설정 */
-        $(function () {
-             /**
-            *   코드 에디터 초기화.
-            */
-            partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager"), {
-                lineNumbers: true,
-                mode:  "python",
-                showCursorWhenSelecting: false
-            });
-            
-            
-            
-            var socket = io();
-            var sendStatus = document.getElementById('send-state');
+</body>
 
-            socket.on('connection', function (data) {
-                sendStatus.innerHTML = data;
-            });
+<script>
 
-            socket.on('newMessage', (data) => {
-                sendStatus.innerHTML = data;
-            });
+    /* Socket.io 초기 설정 */
+    $(function () {
+        /**
+       *   코드 에디터 초기화.
+       */
+        partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager"), {
+            lineNumbers: true,
+            mode: "python",
+            showCursorWhenSelecting: false
+        });
 
-            socket.on('codeUpdate', (data) => {
-                $codeEditor = $("#wrapper-code");
-                partnerCodeMirror.setValue(data);
 
-                $codeEditor.removeClass('helpped_client');
-                $codeEditor.removeClass('submitted_client');
 
-                $codeEditor.css({backgroundColor: "#FFFF0050"});
-                $codeEditor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);    
+        var socket = io();
+        var sendStatus = document.getElementById('send-state');
 
-                // 업데이트시 제출 취소
-                hideControlBox();
-            });
+        socket.on('connection', function (data) {
+            sendStatus.innerHTML = data;
+        });
 
-            socket.on('somebodyHelp', (data) => {
-                $("#wrapper-code").addClass('helpped_client');
-                $codeEditor.css({backgroundColor: "red"});
-            });    
+        socket.on('newMessage', (data) => {
+            sendStatus.innerHTML = data;
+        });
 
-            socket.on('somebodySubmit', (data) => {
-                $("#wrapper-code").addClass('submitted_client');
-                $codeEditor.css({backgroundColor: "blue"});
-                
-                showControlBox();
-            });
+        socket.on('codeUpdate', (data) => {
+            $codeEditor = $("#wrapper-code");
+            partnerCodeMirror.setValue(data);
 
-            /**
-            *   Socket 관련 로직
-            */
-            function emitMessage(message) {
-                socket.emit('message', message);
-            }
+            $codeEditor.removeClass('helpped_client');
+            $codeEditor.removeClass('submitted_client');
 
-            function emitCodeUpdate(code) {
-                socket.emit('code', code);
-            }
+            $codeEditor.css({ backgroundColor: "#FFFF0050" });
+            $codeEditor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);
 
-            function emitSubmitAnswer(answer) {
-                socket.emit('submitAnswer', answer);
-            }
+            // 업데이트시 제출 취소
+            hideControlBox();
+        });
 
-            /**
-            *   코드 에디터 동작
-            */
-            $("#txt-code-manager textarea").keyup(function() {
-                /* Emit */
-                //                emitCodeUpdate(myCodeMirror.getValue());
-            })
+        socket.on('somebodyHelp', (data) => {
+            $("#wrapper-code").addClass('helpped_client');
+            $codeEditor.css({ backgroundColor: "red" });
+        });
 
-            $("#btn_success").click(function() {
-                emitSubmitAnswer("success");
-                hideControlBox();
-            })
+        socket.on('somebodySubmit', (data) => {
+            $("#wrapper-code").addClass('submitted_client');
+            $codeEditor.css({ backgroundColor: "blue" });
 
-            $("#btn_fail").click(function() {
-                emitSubmitAnswer("fail");
-                hideControlBox();
-            })
+            showControlBox();
+        });
 
-            $("#btn_invite").click(function() {
+        /**
+        *   Socket 관련 로직
+        */
+        function emitMessage(message) {
+            socket.emit('message', message);
+        }
 
-                $.get('/api/invite/generate', function(data) {
-                    console.log(data);
-                    let inviteCode = data.code
+        function emitCodeUpdate(code) {
+            socket.emit('code', code);
+        }
 
-                    $("#btn_invite").after("<h3><a href='/v/" + inviteCode + "'> " + "localhost:3000/v/" + inviteCode + "</h3>");
-                });
-            })
+        function emitSubmitAnswer(answer) {
+            socket.emit('submitAnswer', answer);
+        }
 
+        /**
+        *   코드 에디터 동작
+        */
+        $("#txt-code-manager textarea").keyup(function () {
+            /* Emit */
+            //                emitCodeUpdate(myCodeMirror.getValue());
         })
 
-    </script>
+        $("#btn_success").click(function () {
+            emitSubmitAnswer("success");
+            hideControlBox();
+        })
+
+        $("#btn_fail").click(function () {
+            emitSubmitAnswer("fail");
+            hideControlBox();
+        })
+
+        $("#btn_invite").click(function () {
+            let paths = window.location.href.split('?')
+            let room = paths[1];
+
+            console.log(room);
+            $.post('/api/invite/generate', { "room": room }, function (data) {
+                let inviteCode = data.code
+
+                $("#btn_invite").after("<h3><a href='/v/" + inviteCode + "'> " + "localhost:3000/v/" + inviteCode + "</h3>");
+            });
+        })
+
+    })
+
+</script>
 
 </html>
