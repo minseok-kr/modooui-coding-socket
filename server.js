@@ -119,7 +119,35 @@ app.get('/room/:code', function (req, res) {
     res.redirect('/manage?' + roomNumber);
 })
 
-app.get('/channel/new', function(req, res) {
+// 방 입장시 초기화.
+app.post('/room/getInfo', function (req, res) {
+    let roomNumber = req.body.code;
+    console.log("ROOM: " + roomNumber);
+
+    mongodb.connect(function (err) {
+        if (err) {
+            res.sendStatus(400);
+            return;
+        }
+
+        const db = mongodb.db('modoocoding');
+        db.collection('room').findOne({ "index": Number(roomNumber) }, function (err, data) {
+            if (err != null) {
+                console.log(err);
+                return;
+            }
+
+            if (data != null) {
+                console.log(data);
+                res.json(data);
+                return;
+            }
+            res.sendStatus(400);
+        })
+    })
+})
+
+app.get('/channel/new', function (req, res) {
     res.sendFile(siteurl + '/channel/new-channel.html')
 })
 
@@ -201,8 +229,6 @@ app.get('/invite/', function (req, res) {
     res.redirect('/invite/error.html');
 })
 
-app.get('', function (req, res) {
-    console.log(req.params.code);
 app.get('*', function (req, res) {
     res.redirect('/error-404.html');
 })
