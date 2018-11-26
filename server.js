@@ -3,7 +3,7 @@
 /* Socket.io 초기화 */
 const express = require('express');
 const path = require('path');
-const mongodb = require('mongodb').MongoClient('mongodb://localhost:27017');
+const mongodb = require('mongodb').MongoClient('mongodb://localhost:27017',  { useNewUrlParser: true });
 const socketIO = require('socket.io');
 const app = express();
 const server = require('http').createServer(app);
@@ -90,28 +90,13 @@ app.get('/api/invite/generate', function(req, res) {
     roomNumber = 1;
 
     invitator.generateInviteCode(mongodb, roomNumber, function(invitation) {
-        console.log(invitation);
-
-        if (invitation.code == -9) {
-            console.log(Date() + ": Room " + roomNumber + ". already has iviteCode " +  + invitation.code);
-    
-            res.json(invitation)
-        } else {
-            console.log(Date() + ": Generate Invite Code." + invitation.code);
-    
-            res.json(invitation)
-        }
+        res.json(invitation)
     })
 })
 
 app.get('/v/:code', function(req, res) {
     console.log(req.url)
     let inviteCode = req.params.code
-
-    console.log("======")
-    console.log(req.url);
-    console.log(req.params.code);
-    console.log("======")
     if (inviteCode == 'undefinded') {
         res.redirect('/invite/error.html');
         return

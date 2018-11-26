@@ -159,7 +159,7 @@
                     console.log(data);
                     let inviteCode = data.code
 
-                    $("#btn_invite").after("<h3>localhost:3000/v/" + inviteCode + "</h3>");
+                    $("#btn_invite").after("<h3><a href='/v/" + inviteCode + "'> " + "localhost:3000/v/" + inviteCode + "</h3>");
                 });
             })
 
