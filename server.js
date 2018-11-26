@@ -157,5 +157,7 @@ app.get('/v', function (req, res) {
 
 app.get('', function (req, res) {
     console.log(req.params.code);
+app.get('*', function (req, res) {
+    res.redirect('/error-404.html');
 })
 //app.use(express.static(path.join(__dirname, 'css/styles.css')));
