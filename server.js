@@ -104,7 +104,7 @@ app.post('/api/room/generate', function (req, res) {
             let maxRoomIndex = num;
             // 방에 설정될 기본 문제.
             let problem = { "descript": reqData.problemDesc, "input": reqData.problemIn, "output": reqData.problemOut }
-            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "onwer": "", "users": [""], "problem": problem }
+            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": "", "users": [""], "problem": problem }
 
             db.collection('room').insertOne(newRoom);
             res.redirect("/room/" + maxRoomIndex);
@@ -125,7 +125,7 @@ app.post('/room/getInfo', function (req, res) {
 
     let roomNumber = req.body.code;
     let clientId = req.body.clientId;
-    console.log("ROOM: " + roomNumber);
+    console.log("[" + clientId + "] joins room " + roomNumber + ".");
 
     mongodb.connect(function (err) {
         if (err) {
@@ -148,8 +148,7 @@ app.post('/room/getInfo', function (req, res) {
                     res.sendStatus(401);
                     return;
                 }
-                
-                console.log(data);
+
                 res.json(data);
                 return;
             }
@@ -191,8 +190,6 @@ app.post('/api/invite/check', function (req, res) {
             }
 
             if (data != null) {
-                console.log(data);
-
                 let curTime = new Date().getTime();
                 if (curTime < data.expire) {
                     console.log('초대 링크 성공');
@@ -207,7 +204,6 @@ app.post('/api/invite/check', function (req, res) {
                         }
 
                         if (data != null) {
-                            console.log(roomData)
                             res.json({ "name": roomData.title, "desc": roomData.description });
                         } else {
                             res.sendStatus(500);
@@ -236,8 +232,50 @@ app.get('/v/:code', function (req, res) {
 })
 
 app.get('/invite/', function (req, res) {
-    console.log("[2]?????");
     res.redirect('/invite/error.html');
+})
+
+app.post('/api/profile', function (req, res) {
+    let id = req.body.id;
+    mongodb.connect(function (err) {
+        let db = mongodb.db('modoocoding');
+
+        db.collection('room').find({
+            $or:
+                [{ "users": { $in: ['id'] } },
+                { "owner": "id" }]
+        }).toArray(function (err, docs) {
+            if (err) {
+                console.log(err);
+                res.sendStatus(500);
+                return;
+            }
+
+            let response = {
+                "host": [],
+                "member": []
+            }
+            for (let i = 0; i < docs.length; i++) {
+                if (docs[i].owner == id) {
+                    response["host"].push(docs[i]);
+                } else {
+                    response["member"].push(docs[i]);
+                }
+            }
+
+            res.json(response);
+        })
+    })
+
+    // {
+    //     _id: 5bfc30ae2834bd04034ffddc,
+    //         index: 2,
+    //             title: '나는 슬플때 스터디를 연다',
+    //                 description: '나 혼자 하는 스터디',
+    //                     owner: '',
+    //                         users: ['id'],
+    //                             problem: { descript: '2를 출력해보자', input: '', output: '2' }
+    // }
 })
 
 app.get('*', function (req, res) {
