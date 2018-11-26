@@ -233,7 +233,7 @@ app.get('/invite/', function (req, res) {
 })
 
 app.post('/api/profile', function (req, res) {
-    let id = req.body.id;
+    let id = req.body.clientId;
     mongodb.connect(function (err) {
         let db = mongodb.db('modoocoding');
 

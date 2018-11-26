@@ -18,6 +18,10 @@ h1 {
     text-align: center;
 }
 
+.inner-card {
+    margin-bottom: 5px;
+}
+
 h5 {
     margin-bottom: 5px !important;
 }
