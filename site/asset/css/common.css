@@ -17,3 +17,21 @@
     float: right;
     margin-bottom: 40px;
 }
+
+p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
+
+#container-menu {
+    margin-top: 75px;
+}
+
+#btn-new-study:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+#btn-join-study:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}

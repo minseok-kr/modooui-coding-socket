@@ -1,74 +1,83 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="icon" href="../../favicon.ico">
 
-        <title>그룹 스터디 시작하기</title>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../asset/css/common.css" />
 
-        <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-        <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+    <title>그룹 스터디 시작하기</title>
 
-        <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
-    </head>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
 
-    <body>
+    <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+</head>
 
-         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="/">모두의 코딩</a>
+<body>
 
-                <div class="mr-auto"></div>
-                <div id="nav-profile">
-
-                    <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" width="30" height="30"/>
-                    <span id="nav-client-name">박민석</span>
-                </div>
-            </div>
-        </nav>
-        <div class="jumbotron"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <h1>그룹 스터디 시작하기 </h1>
-            <p>스터디 생성을 통해 스터디 그룹 스터디를 만드세요. 스터디 입장을 통해 코드를 스터디할 수 있습니다.</p>
-            
-            <div class="row">
-               <div class="col">
-                   <div class="card md-3" style="margin-right:15px">
-                    <div class="card-body">
-                        <h5 class="card-title">스터디 생성</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="/channel/new" class="btn btn-lg btn-warning">스터디 생성</a>
-                    </div>
-                </div>
-               </div>
-                
-                
-                <div class="col">
-                <div class="card md-3">
-                    <div class="card-body">
-                        <h5 class="card-title">스터디 입장</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        <a href="/client" class="btn btn-lg btn-success">스터디 입장</a>
-                    </div>
-                </div>    
-                </div>
-                
+            <a class="navbar-brand" href="/">모두의 코딩</a>
+
+            <div class="mr-auto"></div>
+            <div id="nav-profile">
+
+                <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg"
+                    width="30" height="30" />
+                <span id="nav-client-name">박민석</span>
             </div>
         </div>
+    </nav>
+    <div class="jumbotron"></div>
+    <div class="container">
+        <h1>그룹 스터디 시작하기 </h1>
+        <p>스터디 생성을 통해 스터디 그룹 스터디를 만드세요. 스터디 입장을 통해 코드를 스터디할 수 있습니다.</p>
+
+        <div class="row" id="container-menu">
+            <div class="col">
+                <div id="btn-new-study" class="card md-3" style="margin-right:15px">
+                    <div class="card-body">
+                        <h5 class="card-title">스터디 생성</h5>
+                        <p class="card-text">참여자들의 코드작성을 실시간으로 지켜보며 빠르게 피드백을 전달 할 수 있는 그룹 스터디 방을 생성합니다.</p>
+                        <!-- <a href="/channel/new" class="btn btn-lg btn-warning">스터디 생성</a> -->
+                    </div>
+                </div>
+            </div>
 
 
+            <div class="col">
+                <div id="btn-join-study" class="card md-3">
+                    <div class="card-body">
+                        <h5 class="card-title">스터디 입장</h5>
+                        <p class="card-text">그룹 스터디 개설자가 제공하는 초대링크를 통하여 독자적인 그룹 스터디 방에 참여할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 
-        <!-- Bootstrap core JavaScript
+    <!-- Bootstrap core JavaScript
 ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    </body>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+        $('#btn-new-study').click(function() {
+            window.location.href = "/channel/new";
+        })
+
+        $('#btn-join-study').click(function() {
+            alert("그룹 스터디 개설자에게 초대 링크를 요청하세요")
+        })
+    </script>
+</body>
+
 </html>

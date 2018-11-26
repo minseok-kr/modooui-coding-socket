@@ -179,6 +179,7 @@
             });
             
             socket.on('submitResult', (data) => {
+                $('#btn_submit').removeClass("m-progress");
                if (data == "success")  {
                    toast('성공했습니다.', data);
                } else if (data == "fail") {
@@ -202,9 +203,11 @@
             // 빌드: 에러체크
             $('#btn_build').click(function() {
                 toast("빌드 중...", "warning");
+                $('#btn_build').addClass("m-progress");
 
                 var code = myCodeMirror.getValue();
                 $.post("/api/build", { "code": code }, function(data) {
+                    $('#btn_build').removeClass("m-progress");
                     console.log(data);
                     if (data.status.includes("success")) {
                         toast("빌드 성공.", "success")
@@ -237,6 +240,8 @@
             // 채점: 아웃풋과 문제의 아웃풋이 맞는지 비교
             $('#btn_submit').click(function() {
                 toast("제출하였습니다. 기다려주세요...");
+                $('#btn_submit').addClass("m-progress");
+
                 socket.emit('submit', "it");
             })
 

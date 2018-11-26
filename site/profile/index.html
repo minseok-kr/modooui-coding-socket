@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/asset/css/profile.css" />
-    <link rel="stylesheet" href="../asset//css/common.css"/>
+    <link rel="stylesheet" href="../asset//css/common.css" />
 </head>
 
 <body>
@@ -77,14 +77,14 @@
                 console.log(data);
 
                 let ownList = data["host"];
-                standizeList($('#list-own-study'), ownList);
+                standizeList($('#list-own-study'), ownList, true);
 
                 let participateList = data["member"];
-                standizeList($('#list-participate-study'), participateList);
+                standizeList($('#list-participate-study'), participateList, false);
             }
         })
 
-        function standizeList(target, list) {
+        function standizeList(target, list, isOwner) {
             if (list.length == 0) {
                 target.append(makeEmptyInfo());
             } else {
@@ -93,19 +93,22 @@
                     let desc = element.description
                     let roomNum = element.index
 
-                    target.append(makeCardTemplate(name, desc, roomNum))
+                    target.append(makeCardTemplate(name, desc, roomNum, isOwner))
                 })
             }
         }
 
-        function makeCardTemplate(name, desc, roomNum) {
+        function makeCardTemplate(name, desc, roomNum, isOwner) {
+            let url = ""
+            if (isOwner) { url = "manage" } else { url = "client" }
+
             return `<div class="col-md-6">
                         <div class="card inner-card">
                                 <div class="card-body"'>
                                         <h5 class="card-title" id="txt-card-title">` + name + `</h5>
                                         <p class="card-text" id="txt-card-content">` + desc + `</p>
                                         <button class='
-                                    btn btn-success' style='float: right;'><a style="text-decoration: none; color:white" href='/client?` + roomNum + `'>스터디 들어가기</a></button>
+                                    btn btn-success' style='float: right;'><a style="text-decoration: none; color:white" href='/` + url + `?` + roomNum + `'>스터디 들어가기</a></button>
                                 </div>
                             </div>
                 </div>`;

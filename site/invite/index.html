@@ -18,6 +18,7 @@
 
     <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/asset/css/invite.css" />
+    <link rel="stylesheet" href="/asset/css/common.css" />
 </head>
 
 <body>
@@ -60,11 +61,11 @@
     <script>
         $(function () {
             $('#card-room').hide();
+            $('#btn_join').addClass('m-progress');
 
             var pathname = window.location.pathname;
             paths = pathname.split('/');
             inviteCode = paths[paths.length - 1];
-
             $.post('/api/invite/check', { code: inviteCode }, function (data) {
                 if (data) {
                     console.log("적 " + JSON.stringify(data))
@@ -72,6 +73,7 @@
                     $('#txt-card-content').html(data.desc)
                     $('#card-room').show();
 
+                    $('#btn_join').removeClass('m-progress');
                     $('#btn_join').click(function () {
                         window.location.href = "/client?" + data.room;
                     })
