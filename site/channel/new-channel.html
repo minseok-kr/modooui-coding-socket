@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>모두의 코딩</title>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/asset/css/channel-new.css" />
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">모두의 코딩</a>
+
+            <div class="mr-auto"></div>
+            <div id="nav-profile">
+
+                <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg"
+                    width="30" height="30" />
+                <span id="nav-client-name">박민석</span>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>그룹 스터디 생성하기</h1>
+
+        <div class="card card-room-edit" id="card-room">
+            <div class="card-body card-container-top">
+                <img class="rounded-circle img-room" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" />
+            </div>
+            <div class="card-body" id="card-edit">
+                <form method="POST" action="/api/room/generate">
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="input-name" aria-describedby="emailHelp"
+                            placeholder="스터디 이름">
+                        <small id="emailHelp" class="form-text text-muted">스터디 진행시 개설자와 참여에게 표시될 이름입니다.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="input-desc" aria-describedby="emailHelp"
+                            placeholder="스터디 설명">
+                        <small id="emailHelp" class="form-text text-muted">스터디를 한줄로 설명해주세요.</small>
+                    </div>
+
+                    <!-- Options -->
+                    <label>선택</label>
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="input-problem-desc" aria-describedby="emailHelp"
+                            placeholder="문제">
+                        <small id="emailHelp" class="form-text text-muted">참여자들에게 보여질 문제입니다. 문제는 수정 가능합니다.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="input-problem-input" aria-describedby="emailHelp"
+                            placeholder="예상 입력">
+                        <small id="emailHelp" class="form-text text-muted">빌드시 입력될 값입니다.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="input-problem-output" aria-describedby="emailHelp"
+                            placeholder="예상 출력">
+                        <small id="emailHelp" class="form-text text-muted">빌드시 참여자들이 만들어야하는 출력입니다.</small>
+                    </div>
+                </form>
+
+                <button class="btn btn-lg btn-success" id="btn_next" style="float: right">들어가기</button>
+            </div>
+
+            <div class='card-body' id="card-confirm">
+                <form method="POST" action="/api/room/generate">
+                    <div class="form-group">
+                        <label>스터디 이름</label>
+                        <input type="text" class="form-control" id="study-name" name="name" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>스터디 설명</label>
+                        <input type="text" class="form-control" id="study-desc" name="desc" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>문제 설명</label>
+                        <input type="text" class="form-control" id="study-problem-desc" name="problemDesc" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>문제 예상 입력</label>
+                        <input type="text" class="form-control" id="study-problem-input" name="problemIn" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>문제 예상 출력</label>
+                        <input type="text" class="form-control" id="study-problem-output" name="problemOut" readonly>
+                    </div>
+
+                    <button class="btn btn-lg btn-success" id="btn_confirm" style="float: right">생성하기</button>
+                </form>
+                <button class="btn btn-lg btn-danger" id="btn_edit" style="float: left;">수정하기</button>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+        let halfScreenWidth = window.outerWidth / 2;
+        $('#card-confirm').hide();
+        $('#btn_next').click(function () {
+            $('.card-room-edit').stop().animate({
+                right: halfScreenWidth + 200
+            }, 700).animate({
+                right: -(halfScreenWidth + 200)
+            }, 0, null, function () {
+                $('#card-confirm').show();
+                $('#card-edit').hide();
+
+                setInputData();
+            }).animate({
+                right: 0
+            }, 700);
+        })
+
+        $('#btn_edit').click(function () {
+            $('.card-room-edit').stop().animate({
+                left: halfScreenWidth + 200
+            }, 700).animate({
+                left: -(halfScreenWidth + 200)
+            }, 0, null, function () {
+                $('#card-confirm').hide();
+                $('#card-edit').show();
+            }).animate({
+                left: 0
+            }, 700);
+        })
+
+        $('#btn_confirm').click(function() {
+            submit();
+        })
+
+        function setInputData() {
+            $('#study-name').val($('#input-name').val())
+            $('#study-desc').val($('#input-desc').val())
+            $('#study-problem-desc').val($('#input-problem-desc').val())
+            $('#study-problem-input').val($('#input-problem-input').val())
+            $('#study-problem-output').val($('#input-problem-output').val())
+        }
+    </script>
+</body>
+
+</html>

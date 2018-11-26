@@ -1,0 +1,47 @@
+#section-problem-info {
+    margin-bottom: 40px;
+}
+
+#card-room {
+    margin: 0px auto;
+    width: 500px;
+}
+
+.card-room-edit {
+    /* position: absolute; */
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.card-container-top {
+    padding-bottom: 0px;
+    margin: 0px auto;
+}
+
+.img-room {
+    width: 100px;
+    height: 100px;
+}
+
+h5 {
+    margin-bottom: 5px !important;
+}
+
+h4 {
+    text-align: center;
+}
+
+.form-group {
+    text-align: start !important;
+    margin-bottom: 15px !important;
+}
+
+.info-err {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}

@@ -18,7 +18,7 @@ exports.generateInviteCode = function (database, roomNumber, callback) {
             callback({ status: "fail", code: "" });
         }
 
-        const db = database.db("room");
+        const db = database.db("modoocoding");
         db.collection('invite').find({ "room": roomNumber }).toArray(function (err, docs) {
             // TODO: find -> findOne
             if (docs.length != 0) {
