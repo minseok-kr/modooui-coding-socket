@@ -263,6 +263,9 @@
             myCodeMirror = CodeMirror(document.getElementById("txt-code-client") ,{
                 lineNumbers: true,
                 mode:  "python",
+                tabSize: 8,
+                indentWithTabs: true,
+                autofocus: true,
                 showCursorWhenSelecting: false
             });
             myCodeMirror.setValue("");            
