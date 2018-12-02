@@ -1,0 +1,145 @@
+
+#section-problem-info {
+    margin-bottom: 40px;
+}
+
+h5 {
+    margin-top: 20px !important;
+}
+
+.client-view {
+    margin-bottom: 10px;
+}
+
+.card {
+    height: auto;
+    width: 300px;
+}
+
+.card-body {
+    height: 270px;
+    padding: 10px !important;
+}
+
+.client-code-view {
+    height:200px;
+	width:260px;
+    float:left;
+    margin-bottom: 10px;
+}
+
+.code-small-view {
+    height: 400px;
+    width: 520px;
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    -o-transform: scale(0.5);
+    transform: scale(0.5);
+}
+
+.code-big-view {
+    height: 580px;
+    width: 980px;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+}
+
+.inner-code-view {    
+    -webkit-transform-origin:left top;
+
+    /* more transition here */
+}
+
+.control-panel {
+    
+}
+
+.chip {
+    z-index: 1011111
+}
+
+.editor-label {
+    margin-top: 10px;
+    /* position: relative;
+    top: -40;
+    right:10;
+    z-index: 10;
+    float: right; */
+}
+
+#blind {
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    top: 0px;
+    z-index: 998;
+}
+
+.m-progress {
+    position: relative;
+    opacity: .8;
+    color: transparent !important;
+    text-shadow: none !important;
+}
+
+.m-progress:hover,
+.m-progress:active,
+.m-progress:focus {
+    cursor: default;
+    color: transparent;
+    outline: none !important;
+    box-shadow: none;
+}
+
+.m-progress:before {
+    content: '';
+    
+    display: inline-block;
+    
+    position: absolute;
+    background: transparent;
+    border: 1px solid #fff;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    
+    box-sizing: border-box;
+    
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+    
+    width: 24px;
+    height: 24px;
+    
+    -webkit-animation: ld 1s ease-in-out infinite;
+    -moz-animation:    ld 1s ease-in-out infinite;
+    -o-animation:      ld 1s ease-in-out infinite;
+    animation:         ld 1s ease-in-out infinite;
+}
+
+@-webkit-keyframes ld {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  @-moz-keyframes ld {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  @-o-keyframes ld {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  @keyframes ld {
+    0%   { transform: rotate(0deg) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
