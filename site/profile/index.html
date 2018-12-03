@@ -41,11 +41,11 @@
 
         <div class="card" id="card-room">
             <div class="card-body card-container-top">
-                <img class="rounded-circle img-room" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" />
+                <img class="rounded-circle" id="img-room"/>
             </div>
             <div class="card-body">
-                <h5 class="card-title" id="txt-card-title">이름</h5>
-                <p class="card-text" id="txt-card-content">이메일</p><br />
+                <h5 class="card-title" id="txt-card-title"></h5>
+                <p class="card-text" id="txt-card-content"></p><br />
             </div>
         </div>
 
@@ -68,13 +68,21 @@
 ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>
-        let paths = window.location.href.split('?')
-        let id = paths[1];
-        console.log(id)
-        $.post('/api/profile', { "clientId": id }, function (data) {
+    <script>    
+    $('#card-room').hide()
+        $.get('/api/profile', function (data) {
             if (data != null) {
                 console.log(data);
+
+                $('#card-room').show()
+
+                let userImg = data["userImg"];
+                let userName = data["userName"];
+                let userEmail = data["userEmail"];
+
+                $('#img-room').attr("src", userImg);
+                $('#txt-card-title').text(userName);
+                $('#txt-card-content').text(userEmail);
 
                 let ownList = data["host"];
                 standizeList($('#list-own-study'), ownList, true);
@@ -82,6 +90,8 @@
                 let participateList = data["member"];
                 standizeList($('#list-participate-study'), participateList, false);
             }
+        }).fail(function() {
+                window.location.href = "/";
         })
 
         function standizeList(target, list, isOwner) {

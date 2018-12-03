@@ -38,8 +38,8 @@
                     <br />
                     <button id="BTN_GOOGLE_LOGIN" type="button" class="btn btn-success">구글인증</button>
 
-                    <button id="btn_logout" class="btn btn-danger">로그아웃</button>
-                    <a href="javascript:login()">세션 유지</a>
+                    <!-- <button id="btn_logout" class="btn btn-danger">로그아웃</button> -->
+                    <!-- <a href="javascript:login()">세션 유지</a> -->
                 </div>
             </div>
         </div>
@@ -106,8 +106,24 @@
             var provider = new firebase.auth.GoogleAuthProvider();
 
             firebase.auth().signInWithPopup(provider).then(function (result) {
-                //                    $('#AUTH_STATE').text(result.user.displayName + "로그인 하셨습니다.");
-                window.location.href = "/";
+                let name = result.user.displayName;
+                let img = result.user.photoURL;
+                let id = result.user.id;
+                let email = result.user.email;
+
+                $.post('/api/_login', {
+                    "userName": name,
+                    "userImg": img,
+                    "userId": id,
+                    "userEmail": email
+                }, function(data) {
+                    console.log(data)
+                    if (data) {
+                        window.location.href = "/";
+                    } else {
+                        alert("FAIL");
+                    }
+                });
 
             }).catch(function (error) {
                 alert(error.message)

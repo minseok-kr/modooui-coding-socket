@@ -10,6 +10,7 @@ const server = require('http').createServer(app);
 const port = process.env.PORT || 3000;
 const io = socketIO(server);
 const bodyParser = require('body-parser');
+const expressSession = require('express-session');
 
 /* Custom Modules */
 const eventer = require('./module/eventer.js');
@@ -29,20 +30,36 @@ eventer.onEvent(io);
 */
 let siteurl = __dirname + "/site/"
 
+// Session.
+app.use(expressSession({
+    secret: 'modoo-session-key',
+    resave: true,
+    saveUninitialized: true
+}));
+
 app.get('/client', function (req, res) {
+    if (!isLogin(req, res)) return;
+    
     res.sendFile(siteurl + 'chat/client-index.html');
 })
 
 app.get('/manage', function (req, res) {
+    if (!isLogin(req, res)) return;
+
     res.sendFile(siteurl + 'chat/manager-index.html');
 })
 
 
 app.get('/login', function (req, res) {
-    res.sendFile(siteurl + 'singin/index.html');
+    if (!isLogin(req, res)) return;
+
+    // 이미 되어있음.
+    res.redirect('/');
 })
 
 app.get('/newchannel', function (req, res) {
+    if (!isLogin(req, res)) return;
+    
     res.sendFile(siteurl + 'channel/index.html');
 })
 
@@ -232,8 +249,27 @@ app.get('/invite/', function (req, res) {
     res.redirect('/invite/error.html');
 })
 
-app.post('/api/profile', function (req, res) {
-    let id = req.body.clientId;
+// app.get('/profile', function (req, res) {
+//      if (!req.session.user) {
+//         console.log("찾을 수 없음.")
+//         res.redirect('/');
+//         return;
+//     }
+
+//     res.sendFile('/profile/?id=');
+// })
+
+app.get('/api/profile', function (req, res) {
+    if (!req.session.user) {
+        console.log("찾을 수 없음.")
+        res.sendStatus(404);
+        return;
+    }
+
+    let id = req.session.user.userId;
+    let name = req.session.user.userName;
+    let email = req.session.user.userEmail;
+    let img = req.session.user.userImg;
     mongodb.connect(function (err) {
         let db = mongodb.db('modoocoding');
 
@@ -249,9 +285,13 @@ app.post('/api/profile', function (req, res) {
             }
 
             let response = {
+                "userName": name,
+                "userImg": img,
+                "userEmail": email,
                 "host": [],
                 "member": []
             }
+
             for (let i = 0; i < docs.length; i++) {
                 if (docs[i].owner == id) {
                     response["host"].push(docs[i]);
@@ -275,7 +315,64 @@ app.post('/api/profile', function (req, res) {
     // }
 })
 
+
+app.post('/api/_login', function (req, res) {
+    console.log('Try Login');
+    
+    let paramId = req.body.userId || req.query.userId;
+    let paramName = req.body.userName || req.query.userName;
+    let paramImg = req.body.userImg || req.query.userImg;
+    let paramEmail = req.body.userEmail || req.query.userEmail;
+
+    if (req.session.user) {
+        console.log("이미 로그인 되어있음.")
+
+        res.sendStatus(403)
+    } else {
+        console.lo
+        // 로그인
+        req.session.user = {
+            userId: paramId,
+            userName: paramName,
+            userImg: paramImg,
+            userEmail: paramEmail,
+            authorized: true
+        }
+
+        res.sendStatus(200)
+    }
+})
+
+app.get('/api/_logout', function (req, res) {
+    console.log('Try Logout');
+
+    if (req.session.user) {
+        console.log("로그아웃 시도")
+        
+        req.session.destroy(function(err) {
+            if (err) throw err;
+
+            console.log("로그아웃 완료");
+            res.redirect('/');
+        })
+    } else {
+        console.log("로그아웃 되어있지 않음.")
+        
+        res.redirect('/')
+    }
+})
+
 app.get('*', function (req, res) {
     res.redirect('/error-404.html');
 })
 //app.use(express.static(path.join(__dirname, 'css/styles.css')));
+
+
+let isLogin = function(req, res) {
+    if (!req.session.user) {
+        res.redirect('/signin')
+        return false;
+    }
+
+    return true;
+}
