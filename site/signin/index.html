@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <title>모두의 코딩</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <link rel="stylesheet" href="../asset/css/bootstrap-theme.min.css">
@@ -16,7 +17,6 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">모두의 코딩</a>
-
             <div class="mr-auto"></div>
             <div id="nav-profile">
 
@@ -28,16 +28,20 @@
     </nav>
     <div class="jumbotron"></div>
     <div class="container card-container-top">
-        <h1 id="title-login">Login</h1>
+        <h1 id="title-login">로그인이 필요합니다</h1>
         <div class="container" id="CONTENTS">
 
             <div id="card-login" class="card">
                 <div class="card-body">
                     <h5 id="clientName"></h5>
-                    <img id="client-image" class="rounded-circle"/>
+                    <img id="client-image" class="rounded-circle" src="../asset/img/basic_profile.png"/>
                     <br />
-                    <button id="BTN_GOOGLE_LOGIN" type="button" class="btn btn-success">구글인증</button>
 
+                    <a id="BTN_GOOGLE_LOGIN"><img  src="../asset/img/temp_google_login.png"/></a>
+
+                    <!-- <button id="BTN_GOOGLE_LOGIN" type="button" class="btn btn-success">구글인증</button> -->
+
+                    <h6>계정이 없을 경우에도 Google 계정으로 간단하게 만들 수 있습니다!</h6>
                     <!-- <button id="btn_logout" class="btn btn-danger">로그아웃</button> -->
                     <!-- <a href="javascript:login()">세션 유지</a> -->
                 </div>
@@ -108,7 +112,7 @@
             firebase.auth().signInWithPopup(provider).then(function (result) {
                 let name = result.user.displayName;
                 let img = result.user.photoURL;
-                let id = result.user.id;
+                let id = result.user.uid;
                 let email = result.user.email;
 
                 $.post('/api/_login', {
@@ -126,7 +130,7 @@
                 });
 
             }).catch(function (error) {
-                alert(error.message)
+                // alert(error.message)
             });
         })
 

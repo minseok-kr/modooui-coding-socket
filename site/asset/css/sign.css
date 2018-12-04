@@ -23,6 +23,17 @@ h1 {
     padding-bottom: 0px;
 }
 
+#BTN_GOOGLE_LOGIN {
+    height: 55px;
+    margin-bottom: 25px;
+}
+
+#BTN_GOOGLE_LOGIN img {
+    height: inherit;
+    margin-bottom: 25px;
+}
+
+
 .img-login {
     width: 100px;
     height: 100px;

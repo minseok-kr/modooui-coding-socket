@@ -284,8 +284,7 @@
         function initRoom() {
             let paths = window.location.href.split('?')
             let room = paths[1];
-            let clientId = "id";
-            $.post('/room/getInfo', { "code": room, "clientId": clientId }, function(data) {
+            $.post('/room/getInfo', { "code": room }, function(data) {
                 if (data != null) {
                     $('#txt-room-title').html(data.title);
 

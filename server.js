@@ -16,6 +16,7 @@ const expressSession = require('express-session');
 const eventer = require('./module/eventer.js');
 const codeChecker = require('./module/checker.js');
 const invitator = require('./module/invitator.js');
+const auth = require('./module/authenticator.js');
 
 app.use(express.static(path.join(__dirname, 'site')));
 app.use(bodyParser.json());
@@ -38,28 +39,28 @@ app.use(expressSession({
 }));
 
 app.get('/client', function (req, res) {
-    if (!isLogin(req, res)) return;
-    
+    if (!auth.isLogin(req, res)) return;
+
     res.sendFile(siteurl + 'chat/client-index.html');
 })
 
 app.get('/manage', function (req, res) {
-    if (!isLogin(req, res)) return;
+    if (!auth.isLogin(req, res)) return;
 
     res.sendFile(siteurl + 'chat/manager-index.html');
 })
 
 
 app.get('/login', function (req, res) {
-    if (!isLogin(req, res)) return;
+    if (!auth.isLogin(req, res)) return;
 
     // 이미 되어있음.
     res.redirect('/');
 })
 
 app.get('/newchannel', function (req, res) {
-    if (!isLogin(req, res)) return;
-    
+    if (!auth.isLogin(req, res)) return;
+
     res.sendFile(siteurl + 'channel/index.html');
 })
 
@@ -106,6 +107,12 @@ app.post('/api/confirmCode', function (req, res) {
 
 // 방 생성
 app.post('/api/room/generate', function (req, res) {
+    if (!auth.isLogin(req, res)) {
+        res.sendStatus(404);
+        return;
+    };
+
+    let id = req.session.user.userId;
     mongodb.connect(function (err) {
         if (err != null) return
 
@@ -121,7 +128,7 @@ app.post('/api/room/generate', function (req, res) {
             let maxRoomIndex = num;
             // 방에 설정될 기본 문제.
             let problem = { "descript": reqData.problemDesc, "input": reqData.problemIn, "output": reqData.problemOut }
-            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": "id", "users": [""], "problem": problem }
+            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": id, "users": [""], "problem": problem }
 
             db.collection('room').insertOne(newRoom);
             res.redirect("/room/" + maxRoomIndex);
@@ -140,7 +147,7 @@ app.post('/room/getInfo', function (req, res) {
     // TODO: 정보 얻을 자격 있는지 Validate!
 
     let roomNumber = req.body.code;
-    let clientId = req.body.clientId;
+    let clientId = req.session.user.userId;
     console.log("[" + clientId + "] joins room " + roomNumber + ".");
 
     mongodb.connect(function (err) {
@@ -161,7 +168,7 @@ app.post('/room/getInfo', function (req, res) {
                 if (data.users.find(function (e) {
                     return e == clientId;
                 }) == undefined && data.owner != clientId) {
-                    console.log("권한없음")
+                    console.log("한없음")
                     res.sendStatus(401);
                     return;
                 }
@@ -193,6 +200,9 @@ app.post('/api/invite/generate', function (req, res) {
 app.post('/api/invite/check', function (req, res) {
     let inviteCode = req.body.code;
 
+    let userId = req.session.user.userId;
+
+
     mongodb.connect(function (err) {
         if (err != null) return
         const db = mongodb.db('modoocoding');
@@ -208,17 +218,24 @@ app.post('/api/invite/check', function (req, res) {
                 if (curTime < data.expire) {
                     console.log('초대 링크 성공');
 
+
                     console.log(data);
-                    db.collection('room').findOne({ "index": Number(data.room) }, function (err, roomData) {
+                    db.collection('room').findOne({ index: Number(data.room) }, function (err, roomData) {
                         if (err != null) {
                             console.log(err)
                             res.sendStatus(500);
                             return;
                         }
 
+        
+                        let targetUsers = roomData.users;
+                        targetUsers.push(userId);
+
+                        db.collection('room').update( { index: Number(data.room)}, { $set: { users: targetUsers}})
+
                         console.log(roomData);
                         if (roomData != null) {
-                            res.json({ "room":  Number(data.room), "name": roomData.title, "desc": roomData.description });
+                            res.json({ "room": Number(data.room), "name": roomData.title, "desc": roomData.description });
                         } else {
                             res.sendStatus(500);
                         }
@@ -242,6 +259,11 @@ app.post('/api/invite/join', function (req, res) {
 })
 
 app.get('/v/:code', function (req, res) {
+    if (!auth.isLogin(req, res)) {
+        // res.redirect('/login');
+        return;
+    }
+
     res.sendFile(siteurl + 'invite/');
 })
 
@@ -265,6 +287,7 @@ app.get('/api/profile', function (req, res) {
         res.sendStatus(404);
         return;
     }
+    console.log(req.session.user);
 
     let id = req.session.user.userId;
     let name = req.session.user.userName;
@@ -275,8 +298,8 @@ app.get('/api/profile', function (req, res) {
 
         db.collection('room').find({
             $or:
-                [{ "users": { $in: ['id'] } },
-                { "owner": "id" }]
+                [{ "users": { $in: [id] } },
+                { "owner": id }]
         }).toArray(function (err, docs) {
             if (err) {
                 console.log(err);
@@ -318,7 +341,7 @@ app.get('/api/profile', function (req, res) {
 
 app.post('/api/_login', function (req, res) {
     console.log('Try Login');
-    
+
     let paramId = req.body.userId || req.query.userId;
     let paramName = req.body.userName || req.query.userName;
     let paramImg = req.body.userImg || req.query.userImg;
@@ -348,8 +371,8 @@ app.get('/api/_logout', function (req, res) {
 
     if (req.session.user) {
         console.log("로그아웃 시도")
-        
-        req.session.destroy(function(err) {
+
+        req.session.destroy(function (err) {
             if (err) throw err;
 
             console.log("로그아웃 완료");
@@ -357,7 +380,7 @@ app.get('/api/_logout', function (req, res) {
         })
     } else {
         console.log("로그아웃 되어있지 않음.")
-        
+
         res.redirect('/')
     }
 })
@@ -366,13 +389,3 @@ app.get('*', function (req, res) {
     res.redirect('/error-404.html');
 })
 //app.use(express.static(path.join(__dirname, 'css/styles.css')));
-
-
-let isLogin = function(req, res) {
-    if (!req.session.user) {
-        res.redirect('/signin')
-        return false;
-    }
-
-    return true;
-}
