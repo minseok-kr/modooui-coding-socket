@@ -53,12 +53,14 @@
             </div>
         </div>
     </nav>
-    <div class="jumbotron"></div>
+    <div class="jumbotron container">
+        <span>홓</span>
+        <span id="btn_invite" class="badge badge-success" title="" data-container="body" data-toggle="popover" 
+            data-placement="bottom" data-content="Vivamus
+sagittis lacus vel augue laoreet rutrum faucibus."
+            data-original-title="전달하세요!">초대하기</span>
+    </div>
     <div class="container">
-        <p id='send-state'></p>
-
-        <h1>Partner</h1>
-        <button id="btn_invite" class="btn btn-success">초대링크 생성</button>
         <div id="wrapper-code"></div>
 
         <div id="container-control" style="display: none;">
@@ -71,6 +73,9 @@
     <div id="blind"></div>
 </body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
 <script>
 
     let containerList = [];
@@ -116,10 +121,8 @@
         $(".CodeMirror textarea").attr("readonly", true);
 
         var socket = io();
-        var sendStatus = document.getElementById('send-state');
-
         socket.on('connection', function (data) {
-            sendStatus.innerHTML = data;
+
         });
 
         socket.on('newMessage', (data) => {
@@ -242,7 +245,12 @@
             hideControlBox();
         })
 
-        $("#btn_invite").click(function () {
+
+
+
+        $("#btn_invite").one("click", function (e) {
+            $('[data-toggle="popover"]').popover();
+
             let paths = window.location.href.split('?')
             let room = paths[1];
 
@@ -250,10 +258,10 @@
             $.post('/api/invite/generate', { "room": room }, function (data) {
                 let inviteCode = data.code
 
-                $("#btn_invite").after("<h3><a href='/v/" + inviteCode + "'> " + "localhost:3000/v/" + inviteCode + "</h3>");
+                $('[data-toggle="popover"]').attr("data-content", "localhost:3000/v/" + inviteCode);
+                $('[data-toggle="popover"]').click();
             });
-        })
-
+        });
     })
 
 </script>

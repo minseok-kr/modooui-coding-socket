@@ -18,6 +18,33 @@ h5 {
     width: 300px;
 }
 
+.jumbotron {
+    margin-top: 10px;
+}
+
+#btn_invite {
+    float: right;
+    cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+}
+/* 
+.popover-header::after {
+    content: " ";
+    background-image: url('../img/basic_profile.png');
+    background-size: 15px 15px;
+    width: 15px; 
+    height: 15px;
+    position: absolute;
+    top: 1ex;
+    right: 1ex;
+} */
+
 .card-body {
     height: 270px;
     padding: 10px !important;
