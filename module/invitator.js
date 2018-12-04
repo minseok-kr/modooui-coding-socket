@@ -12,6 +12,58 @@
 
 const uuid = require('uuid-v4');
 
+/**
+ * 초대 링크가 유효한지 확인하고. 유효하면 해당 회원을 등록한다.
+ */
+exports.validateInvitation = function(mongodb, inviteCode, userId, callback) {
+    
+    mongodb.connect(function (err) {
+        if (err != null) return
+        const db = mongodb.db('modoocoding');
+        db.collection('invite').findOne({ code: inviteCode }, function (err, data) {
+            if (err != null) {
+                callback({status: 500, msg: err})
+                return;
+            }
+
+            if (data != null) {
+                let curTime = new Date().getTime();
+                if (curTime < data.expire) {
+                    console.log('초대 링크 성공');
+
+                    db.collection('room').findOne({ index: Number(data.room) }, function (err, roomData) {
+                        if (err != null) {
+                            callback({status: 500, msg: err});
+                            return;
+                        }
+
+                        // 해당 아이디를 스터디 참여자로 등록.
+                        let targetUsers = roomData.users;
+                        if (!targetUsers.contains(userId)) {
+                            targetUsers.push(userId);
+                            db.collection('room').update({ index: Number(data.room) }, { $set: { users: targetUsers } })
+                        }
+
+                        // 스터디룸 이동을 위한 데이터 제공.                        
+                        if (roomData != null) {
+                            let targetData = { "room": Number(data.room), "name": roomData.title, "desc": roomData.description };
+                            callback({status: 200, data: targetData})
+                        } else {
+                            callback({status: 500})
+                        }
+                    })
+
+                } else {
+                    console.log('초대 링크 실패: ' + ((curTime - data.expire) / 1000) + "초 경과");
+                    callback({status: 406, msg: "초대 링크가 만료되었습니다.\n 초대 링크를 다시 요청하세요"})
+                }
+            } else {
+                callback({status: 500})
+            }
+        })
+    })
+}
+
 exports.generateInviteCode = function (database, roomNumber, callback) {
     database.connect(function (err) {
         if (err != null) {

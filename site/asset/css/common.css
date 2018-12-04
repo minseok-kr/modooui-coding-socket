@@ -35,3 +35,7 @@ p {
     background-color: #f2f2f2;
     cursor: pointer;
 }
+
+#nav-profile {
+    cursor: pointer;
+}

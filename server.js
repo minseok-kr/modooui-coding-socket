@@ -22,6 +22,11 @@ app.use(express.static(path.join(__dirname, 'site')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// EJS Setting
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
 server.listen(port, () => console.log('>>> http://localhost:' + port));
 
 eventer.onEvent(io);
@@ -41,13 +46,29 @@ app.use(expressSession({
 app.get('/client', function (req, res) {
     if (!auth.isLogin(req, res)) return;
 
-    res.sendFile(siteurl + 'chat/client-index.html');
+    let userId = req.session.user.userId;
+    let userName = req.session.user.userName;
+    let userImg = req.session.user.userImg;
+
+    res.render("coderoom-client", {
+        userId: userId,
+        userName: userName,
+        userImg: userImg
+    });
 })
 
 app.get('/manage', function (req, res) {
     if (!auth.isLogin(req, res)) return;
 
-    res.sendFile(siteurl + 'chat/manager-index.html');
+    let userId = req.session.user.userId;
+    let userName = req.session.user.userName;
+    let userImg = req.session.user.userImg;
+
+    res.render("coderoom-partner", {
+        userId: userId,
+        userName: userName,
+        userImg: userImg
+    });
 })
 
 
@@ -58,14 +79,50 @@ app.get('/login', function (req, res) {
     res.redirect('/');
 })
 
-app.get('/newchannel', function (req, res) {
-    if (!auth.isLogin(req, res)) return;
+app.get('/signin', function (req, res) {
+    if (auth.checkLogin(req)) {
+        res.redirect('/');
+        return;
+    }
 
-    res.sendFile(siteurl + 'channel/index.html');
+    res.render("login", {})
+    res.end();
+})
+
+app.get('/newchannel', function (req, res) {
+    let userId = "";
+    let userName = "";
+    let userImg = "";
+
+    if (auth.checkLogin(req)) {
+        userId = req.session.user.userId;
+        userName = req.session.user.userName;
+        userImg = req.session.user.userImg;
+    }
+
+    res.render("choiceroom", {
+        userId: userId,
+        userName: userName,
+        userImg: userImg
+    });
 })
 
 app.get('/problems', function (req, res) {
-    res.sendFile(siteurl + 'problems/index.html');
+    let userId = "";
+    let userName = "";
+    let userImg = "";
+
+    if (auth.checkLogin(req)) {
+        userId = req.session.user.userId;
+        userName = req.session.user.userName;
+        userImg = req.session.user.userImg;
+    }
+
+    res.render("problems", {
+        userId: userId,
+        userName: userName,
+        userImg: userImg
+    });
 })
 
 /**
@@ -182,7 +239,38 @@ app.post('/room/getInfo', function (req, res) {
 })
 
 app.get('/channel/new', function (req, res) {
-    res.sendFile(siteurl + '/channel/new-channel.html')
+    if (!auth.isLogin(req, res)) { return; }
+
+    let userId = req.session.user.userId;
+    let userName = req.session.user.userName;
+    let userImg = req.session.user.userImg;
+
+    res.render("makeroom", {
+        userId: userId,
+        userName: userName,
+        userImg: userImg
+    })
+})
+
+app.get('/channel/', function (req, res) {
+    let userId = "";
+    let userName = "";
+    let userEmail = "";
+    let userImg = "";
+
+    if (auth.checkLogin(req)) {
+        userId = req.session.user.userId;
+        userName = req.session.user.userName;
+        userEmail = req.session.user.userEmail;
+        userImg = req.session.user.userImg;
+    }
+
+    res.render("choiceroom", {
+        userId: userId,
+        userName: userName,
+        userEmail: userEmail,
+        userImg: userImg,
+    });
 })
 
 
@@ -197,61 +285,6 @@ app.post('/api/invite/generate', function (req, res) {
     })
 })
 
-app.post('/api/invite/check', function (req, res) {
-    let inviteCode = req.body.code;
-
-    let userId = req.session.user.userId;
-
-
-    mongodb.connect(function (err) {
-        if (err != null) return
-        const db = mongodb.db('modoocoding');
-        db.collection('invite').findOne({ code: inviteCode }, function (err, data) {
-            if (err != null) {
-                console.log(err)
-                res.sendStatus(500);
-                return;
-            }
-
-            if (data != null) {
-                let curTime = new Date().getTime();
-                if (curTime < data.expire) {
-                    console.log('초대 링크 성공');
-
-
-                    console.log(data);
-                    db.collection('room').findOne({ index: Number(data.room) }, function (err, roomData) {
-                        if (err != null) {
-                            console.log(err)
-                            res.sendStatus(500);
-                            return;
-                        }
-
-        
-                        let targetUsers = roomData.users;
-                        targetUsers.push(userId);
-
-                        db.collection('room').update( { index: Number(data.room)}, { $set: { users: targetUsers}})
-
-                        console.log(roomData);
-                        if (roomData != null) {
-                            res.json({ "room": Number(data.room), "name": roomData.title, "desc": roomData.description });
-                        } else {
-                            res.sendStatus(500);
-                        }
-                    })
-
-                } else {
-                    console.log('초대 링크 실패: ' + ((curTime - data.expire) / 1000) + "초 경과");
-                    res.sendStatus(500);
-                }
-            } else {
-                res.sendStatus(500);
-            }
-        })
-    })
-})
-
 // 방 정보에 사용자 등록.
 app.post('/api/invite/join', function (req, res) {
     // 방 Users에 참여자 추가.
@@ -259,27 +292,74 @@ app.post('/api/invite/join', function (req, res) {
 })
 
 app.get('/v/:code', function (req, res) {
-    if (!auth.isLogin(req, res)) {
-        // res.redirect('/login');
-        return;
+    let userId = "";
+    let userName = "";
+    let userEmail = "";
+    let userImg = "";
+
+    if (auth.checkLogin(req)) {
+        userId = req.session.user.userId;
+        userName = req.session.user.userName;
+        userEmail = req.session.user.userEmail;
+        userImg = req.session.user.userImg;
     }
 
-    res.sendFile(siteurl + 'invite/');
+    let roomName = "";
+    let roomDesc = "";
+    let roomNum = 0;
+
+    let code = req.params.code;
+    console.log(code);
+    invitator.validateInvitation(mongodb, code, userId, function (result) {
+        if (result.status == 200) {
+            let data = result.data;
+            roomNum = data.room;
+            roomName = data.name;
+            roomDesc = data.desc;
+            
+            res.render("invite", {
+                userId: userId,
+                userName: userName,
+                userEmail: userEmail,
+                userImg: userImg,
+                roomNum: roomNum,
+                roomName: roomName,
+                roomDesc: roomDesc
+            });
+
+            return;
+        }
+
+        let err_msg = "";
+        if (result.status == 406) {
+            err_msg = result.msg;
+        }
+
+        res.render("invite-error", {
+            userId: userId,
+            userName: userName,
+            userImg: userImg,
+            err: err_msg
+        });
+    })
 })
 
-app.get('/invite/', function (req, res) {
-    res.redirect('/invite/error.html');
+app.get('/profile', function (req, res) {
+    if (!auth.isLogin(req, res)) return;
+
+    let userId = req.session.user.userId;
+    let userName = req.session.user.userName;
+    let userImg = req.session.user.userImg;
+    let userEmail = req.session.user.userEmail;
+
+    res.render("profile", {
+        userName: userName,
+        userId: userId,
+        userImg: userImg,
+        userEmail: userEmail
+    })
+    res.end();
 })
-
-// app.get('/profile', function (req, res) {
-//      if (!req.session.user) {
-//         console.log("찾을 수 없음.")
-//         res.redirect('/');
-//         return;
-//     }
-
-//     res.sendFile('/profile/?id=');
-// })
 
 app.get('/api/profile', function (req, res) {
     if (!req.session.user) {
@@ -291,8 +371,9 @@ app.get('/api/profile', function (req, res) {
 
     let id = req.session.user.userId;
     let name = req.session.user.userName;
-    let email = req.session.user.userEmail;
     let img = req.session.user.userImg;
+    let email = req.session.user.userEmail;
+
     mongodb.connect(function (err) {
         let db = mongodb.db('modoocoding');
 
@@ -385,7 +466,28 @@ app.get('/api/_logout', function (req, res) {
     }
 })
 
+app.get('/', function(req, res) {
+    res.render("index", {})
+})
+
 app.get('*', function (req, res) {
-    res.redirect('/error-404.html');
+    let userId = "";
+    let userName = "";
+    let userEmail = "";
+    let userImg = "";
+
+    if (auth.checkLogin(req)) {
+        userId = req.session.user.userId;
+        userName = req.session.user.userName;
+        userEmail = req.session.user.userEmail;
+        userImg = req.session.user.userImg;
+    }
+
+    res.render("error-404", {
+        userName: userName,
+        userId: userId,
+        userImg: userImg,
+        userEmail: userEmail
+    })
 })
 //app.use(express.static(path.join(__dirname, 'css/styles.css')));

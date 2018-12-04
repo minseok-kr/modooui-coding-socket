@@ -10,3 +10,5 @@ exports.isLogin = function(req, res) {
 
     return true;
 }
+
+exports.checkLogin = function(req) { return req.session.user; }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>모두의 코딩</title>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/asset/css/invite.css" />
+    <link rel="stylesheet" href="/asset/css/common.css" />
+</head>
+
+<body>
+
+    <% include header %>
+    <div class="container">
+        <h1>초대받은 스터디</h1>
+
+        <div class="card" id="card-room">
+            <div class="card-body card-container-top">
+                <img class="rounded-circle img-room" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg" />
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" id="txt-card-title">
+                    <%= roomName %>
+                </h5>
+                <p class="card-text" id="txt-card-content">
+                    <%= roomDesc %>
+                </p><br />
+                <button id="btn_join" class="btn btn-lg btn-success"><a href="/client?<%= roomNum %>">들어가기</a></button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -12,40 +12,25 @@
 
     <title>모두의 코딩</title>
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
-
     <link rel="stylesheet" href="/asset/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/asset/css/profile.css" />
     <link rel="stylesheet" href="../asset//css/common.css" />
 </head>
 
 <body>
+    <!-- header 들어가는 곳 -->
+    <% include header %>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="/">모두의 코딩</a>
-
-            <div class="mr-auto"></div>
-            <div id="nav-profile">
-
-                <img id="client-image" class="rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg"
-                    width="30" height="30" />
-                <span id="nav-client-name">박민석</span>
-            </div>
-        </div>
-    </nav>
     <div class="container">
         <h1>내 정보</h1>
 
         <div class="card" id="card-room">
             <div class="card-body card-container-top">
-                <img class="rounded-circle" id="img-room"/>
+                <img class="rounded-circle" id="img-room" src="<%= userImg %>"/>
             </div>
             <div class="card-body">
-                <h5 class="card-title" id="txt-card-title"></h5>
-                <p class="card-text" id="txt-card-content"></p><br />
+                <h5 class="card-title" id="txt-card-title"><%= userName %></h5>
+                <p class="card-text" id="txt-card-content"><%= userEmail %></p><br />
             </div>
         </div>
 
@@ -66,23 +51,10 @@
 
     <!-- Bootstrap core JavaScript
 ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>    
-    $('#card-room').hide()
+    <script>
         $.get('/api/profile', function (data) {
             if (data != null) {
-                console.log(data);
-
-                $('#card-room').show()
-
-                let userImg = data["userImg"];
-                let userName = data["userName"];
-                let userEmail = data["userEmail"];
-
-                $('#img-room').attr("src", userImg);
-                $('#txt-card-title').text(userName);
-                $('#txt-card-content').text(userEmail);
 
                 let ownList = data["host"];
                 standizeList($('#list-own-study'), ownList, true);
@@ -91,7 +63,7 @@
                 standizeList($('#list-participate-study'), participateList, false);
             }
         }).fail(function() {
-                window.location.href = "/login";
+                window.location.href = "/signin";
         })
 
         function standizeList(target, list, isOwner) {
