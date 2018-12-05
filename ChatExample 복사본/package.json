@@ -1,0 +1,34 @@
+{
+  "name": "12th",
+  "version": "1.0.0",
+  "main": "12_1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.0.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "ejs": "^2.6.1",
+    "error": "^7.0.2",
+    "express": "^4.16.4",
+    "express-error-handler": "^1.1.0",
+    "express-session": "^1.15.6",
+    "http": "0.0.0",
+    "mongoose": "^5.3.14",
+    "msg": "^1.0.0",
+    "nconf": "^0.10.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "print": "^1.1.0",
+    "router": "^1.3.3",
+    "socket.io": "^2.1.1",
+    "throw": "^1.1.0",
+    "use": "^3.1.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}

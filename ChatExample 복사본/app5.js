@@ -14,7 +14,7 @@ var user=require('./routes/user');
 
 var config=require('./config/config');
 
-var database_loader=require('./database/database_loader');
+//var database_loader=require('./database/database_loader');
 var route_loader =require('./routes/route_loader');
 
 //암호화 모듈
@@ -81,7 +81,7 @@ app.use(errorHandler);
 var server=http.createServer(app).listen(app.get('port'), function(){
     console.log('익스프레스로 웹 서버를 실행함 : ' + app.get('port'));
     
-    database_loader.init(app, config);
+    //database_loader.init(app, config);
 });
 
 //socket.io 서버 시작
@@ -204,7 +204,7 @@ io.sockets.on('connection', function(socket){
               
     });
 });
-
+/*
 function sendRoomList(){
     var rooms=getRoomList();
     var output={
@@ -235,7 +235,7 @@ function getRoomList(){
     });
     return rooms;
 }
-    
+*/
 
 function sendResponse(socket, command, code, message){
     var output={

@@ -2,7 +2,7 @@
 <html>
     <head>
        <meta charset="utf-8">
-       <title>채팅 클라이언트 05</title>
+       <title>채팅 클라이언트 03</title>
        
        <script src="jquery-3.1.1.min.js"></script>
        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
@@ -39,15 +39,6 @@
                 println('수신->'+JSON.stringify(message));
             });
             
-            socket.on('room', function(input){
-                if(input.command=='list'){
-                    for (var i=0; i<input.rooms.length; i++){
-                        $('#roomList').append('<p>방 #'+i+'->'+input.rooms[i].id+','+input.rooms[i].name+','+input.rooms[i].owner);
-                    }
-                }
-                
-            });
-            
             socket.on('response', function(input){
                 println('응답->'+JSON.stringify(input));
             });
@@ -73,85 +64,15 @@
             var recepient=$('#recepientInput').val();
             var data=$('#dataInput').val();
             
-            var chattype=$('#chattype option:selected').val();
-            
             var message={
                 sender:sender,
                 recepient:recepient,
-                command:chattype,
+                command:'chat',
                 type:'text',
                 data:data
                 
             };
-            
             socket.emit('message', message);
-            
-        }
-           
-        function createRoom(){
-            
-            var roomId=$('#roomIdInput').val();
-            var roomName=$('#roomNameInput').val();
-            var id=$('#idInput').val();
-            
-            var output={
-                command:'create',
-                roomId:roomId,
-                roomName:roomName,
-                roomOwner:id
-            };
-            socket.emit('room', output);
-        }
-           
-        function updateRoom(){
-            
-            var roomId=$('#roomIdInput').val();
-            var roomName=$('#roomNameInput').val();
-            var id=$('#idInput').val();
-            
-            var output={
-                command:'update',
-                roomId:roomId,
-                roomName:roomName,
-                roomOwner:id
-            };
-            socket.emit('room', output);
-        }
-           
-        function deleteRoom(){
-            
-            var roomId=$('#roomIdInput').val();
-            var id=$('#idInput').val();
-            
-            var output={
-                command:'delete',
-                roomId:roomId,
-                roomName:'',
-                roomOwner:id
-            };
-            
-            socket.emit('room', output);
-        }
-           
-        function joinRoom(){
-            var roomId=$('#roomIdInput').val();
-            
-            var output={
-                command:'join',
-                roomId:roomId
-            };
-            
-            socket.emit('room', output);
-        }
-        function leaveRoom(){
-            var roomId=$('#roomIdInput').val();
-            
-            var output={
-                command:'leave',
-                roomId:roomId
-            };
-            
-            socket.emit('room', output);
             
         }
         
@@ -165,7 +86,7 @@
     </head>
     
     <body>
-        <h3>채팅 클라이언트 05</h3>
+        <h3>채팅 클라이언트 03</h3>
         
         <br>
         <div>
@@ -180,7 +101,7 @@
             <h5>로그인</h5>
             <input type="text" id="idInput" value="test01">
             <input type="password" id="passwordInput" value="1234">
-            <input type="text" id="aliasInput" value="연수">
+            <input type="text" id="aliasInput" value="소녀시대">
             <input type="text" id="todayInput" value="좋은날">
             
             <input type="button" id="loginButton" value="로그인" onclick="login()">
@@ -205,34 +126,7 @@
                 <input type="text" id="dataInput" value="안녕">
             </div>
             <br>
-            <select name="chattype" id="chattype">
-                <option value="chat">채팅</option>
-                <option value="groupchat">그룹 채팅</option>
-            </select>
             <input type="button" id="sendButton" value="전송" onclick="send()">        
-        </div>
-        <br>
-        <br>
-        <div>
-            <h5>방 리스트</h5>
-            <div id="roomList"></div>
-            <br>
-            <input type="button" id="joinRoomButton" value="방 입장하기" onclick="joinRoom()">
-            <input type="button" id="leaveRoomButton" value="방 나가기" onclick="leaveRoom()">
-            <br>
-            <h5>방 만들기</h5>
-            <div>
-                <span>방 아이디 : </span>
-                <input type="text" id="roomIdInput" value="meeting01">
-            </div>
-            <div>
-                <span>방 이름: </span>
-                <input type="text" id="roomNameInput" value="모두의 코딩 대화방">
-            </div>
-            <br>
-            <input type="button" id="createRoomButton" value="방 만들기" onclick="createRoom()">
-            <input type="button" id="updateRoomButton" value="방 이름 바꾸기" onclick="updateRoom()">
-            <input type="button" id="deleteRoomButton" value="방 없애기" onclick="deleteRoom()">
         </div>
         <hr>
         <p>결과</p>

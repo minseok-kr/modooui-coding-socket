@@ -1,3 +1,5 @@
+//var mongoose=require('mongoose');
+
 var database={};
 
 database.init=function(app, config){
@@ -9,9 +11,9 @@ database.init=function(app, config){
 function connect(app, config){
     console.log('connect 호출됨');
     
-    mongoose.Promise=global.promise;
-    mongoose.connect(config.db_url);
-    database.db=mongoose.connection;
+   // mongoose.Promise=global.promise;
+    //mongoose.connect(config.db_url);
+    //database.db=mongoose.connection;
     
     database.db.on('open', function(){
         console.log('데이터베이스에 연결됨 : ' + databaseUrl);
