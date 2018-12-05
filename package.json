@@ -13,7 +13,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "express-error-handler": "^1.1.0",
+    "express-session": "^1.15.6",
     "firebase": "^5.5.8",
     "firebase-app": "0.0.1",
     "firebase-auth": "^0.1.2",
