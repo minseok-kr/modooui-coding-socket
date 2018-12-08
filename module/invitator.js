@@ -37,9 +37,14 @@ exports.validateInvitation = function(mongodb, inviteCode, userId, callback) {
                             return;
                         }
 
+
                         // 해당 아이디를 스터디 참여자로 등록.
                         let targetUsers = roomData.users;
-                        if (!targetUsers.contains(userId)) {
+                        let findResult = targetUsers.find(function(user) {
+                            return user == userId;
+                        });
+
+                        if (findResult == undefined ) {
                             targetUsers.push(userId);
                             db.collection('room').update({ index: Number(data.room) }, { $set: { users: targetUsers } })
                         }
