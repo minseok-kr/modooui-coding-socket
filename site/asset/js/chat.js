@@ -28,5 +28,19 @@ function getMessageTemplate(userImg, userName, message) {
     </div>`
 }
 
+function addSystem(userName, state) {
+    numOfMessage++;
+    $('#messages').append(getSystemTemplate(userName, state));
+    $('#messages').animate({
+        scrollTop: 100 * numOfMessage
+    }, 0);
+    moveToBottom();
+}
+
+function getSystemTemplate(userNmae, state) {
+    return `<div class="dialog-message">
+    <span class="system-message">` + userNmae + `님이 입장했습니다.</span>
+</div>`;
+}
 
 

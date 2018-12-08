@@ -118,8 +118,12 @@
         $(".CodeMirror textarea").attr("readonly", true);
 
         var socket = io();
-        socket.on('connection', function (data) {
+        socket.emit('join', {
+            userName: "<%= userName %>",
+            room: "<%= roomNumber %>"
+        })
 
+        socket.on('connection', function (data) {
         });
 
         socket.on('codeUpdate', (data) => {
@@ -238,10 +242,10 @@
             hideControlBox();
         })
 
-         /**
-         *  채팅 소켓
-         */
-         socket.on("receivedMessage", function (msg) {
+        /**
+        *  채팅 소켓
+        */
+        socket.on("receivedMessage", function (msg) {
             let newRoom = msg.room;
             let newImg = msg.img;
             let newName = msg.name;
@@ -253,6 +257,19 @@
 
             addMessage(newImg, newName, newMsg);
         })
+
+        socket.on("alertChangeUserState", function (msg) {
+            let newName = msg.name;
+            // let state = msg.state;
+            let state = "";
+
+            if ($("#dialog-content").css("display") == "none") {
+                onNewMessage();
+            }
+
+            addSystem(newName, state);
+        })
+
 
         function onNewMessage() {
             $('#dialog-chat').css({
@@ -274,11 +291,12 @@
                 let msg = $(this).val();
                 $(this).val("");
 
+                let roomNumber = "<%= roomNumber %>";
                 let userImg = "<%= userImg %>";
                 let userName = "<%= userName %>";
 
                 socket.emit("sendMessage", {
-                    room: "",
+                    room: roomNumber,
                     userImage: userImg,
                     userName: userName,
                     message: msg
@@ -308,4 +326,5 @@
     })
 
 </script>
+
 </html>

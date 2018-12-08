@@ -142,17 +142,20 @@
 
 <div id="section-dialogs"></div>
 
-
 <script>
     /* Socket.io 초기 설정 */
     $(function () {
         initRoom();
 
-        var socket = io();
+        const socket = io();
         var sendStatus = document.getElementById('send-state');
+        socket.emit('join', { 
+                userName: "<%= userName %>",
+                room: "<%= roomNumber %>"
+            })
 
         socket.on('connection', function (data) {
-            socket.emit('join', { type: "client" })
+            
         });
 
         socket.on('newMessage', (data) => {
@@ -289,6 +292,18 @@
             addMessage(newImg, newName, newMsg);
         })
 
+         socket.on("alertChangeUserState", function (msg) {
+            let newName = msg.name;
+            // let state = msg.state;
+            let state = "";
+
+            if ($("#dialog-content").css("display") == "none") {
+                onNewMessage();
+            }
+
+            addSystem(newName, state);
+        })
+
         function onNewMessage() {
             $('#dialog-chat').css({
                 "border-top-width": "3px",
@@ -313,9 +328,10 @@
 
                 let userImg = "<%= userImg %>";
                 let userName = "<%= userName %>";
+                let roomNumber = "<%= roomNumber %>";
 
                 socket.emit("sendMessage", {
-                    room: "",
+                    room: roomNumber,
                     userImage: userImg,
                     userName: userName,
                     message: msg

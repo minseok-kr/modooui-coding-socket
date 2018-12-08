@@ -4,19 +4,21 @@
 const express = require('express');
 const path = require('path');
 const mongodb = require('mongodb').MongoClient('mongodb://localhost:27017', { useNewUrlParser: true });
-const socketIO = require('socket.io');
 const app = express();
 const server = require('http').createServer(app);
 const port = process.env.PORT || 3000;
-const io = socketIO(server);
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
+const socketIO = require('socket.io');
+const io = socketIO(server);
 
 /* Custom Modules */
 const eventer = require('./module/eventer.js');
 const codeChecker = require('./module/checker.js');
 const invitator = require('./module/invitator.js');
 const auth = require('./module/authenticator.js');
+
+eventer.onEvent(io);
 
 app.use(express.static(path.join(__dirname, 'site')));
 app.use(bodyParser.json());
@@ -28,8 +30,6 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 server.listen(port, () => console.log('>>> http://localhost:' + port));
-
-eventer.onEvent(io);
 
 /**
 *   Routing.
@@ -43,33 +43,82 @@ app.use(expressSession({
     saveUninitialized: true
 }));
 
-app.get('/client', function (req, res) {
+app.get('/client?:code', function (req, res) {
     if (!auth.isLogin(req, res)) return;
 
-    let userId = req.session.user.userId;
+    let roomNumber = 0;
+    for (let key in req.query) { roomNumber = key; }
+
+    let clientId = req.session.user.userId;
+    let userName = req.session.user.userName;
+    let userImg = req.session.user.userImg;
+    console.log("[" + clientId + "] joins room " + roomNumber + ".");
+
+    connectRoom(clientId, roomNumber, function () {
+
+        console.log("IO : " + io);
+
+        res.render("coderoom-client", {
+            roomNumber: roomNumber,
+            userId: clientId,
+            userName: userName,
+            userImg: userImg
+        });
+    })
+})
+
+app.get('/manage?:code', function (req, res) {
+    if (!auth.isLogin(req, res)) return;
+
+    let roomNumber = 0;
+    for (let key in req.query) { roomNumber = key; }
+
+    let clientId = req.session.user.userId;
     let userName = req.session.user.userName;
     let userImg = req.session.user.userImg;
 
-    res.render("coderoom-client", {
-        userId: userId,
-        userName: userName,
-        userImg: userImg
-    });
+    connectRoom(clientId, roomNumber, function () {
+        res.render("coderoom-partner", {
+            roomNumber: roomNumber,
+            userId: clientId,
+            userName: userName,
+            userImg: userImg
+        });
+    })
 })
 
-app.get('/manage', function (req, res) {
-    if (!auth.isLogin(req, res)) return;
+function connectRoom(clientId, roomNumber, successCallback) {
+    mongodb.connect(function (err) {
+        if (err) {
+            res.redirect('/');
+            return;
+        }
 
-    let userId = req.session.user.userId;
-    let userName = req.session.user.userName;
-    let userImg = req.session.user.userImg;
+        const db = mongodb.db('modoocoding');
+        db.collection('room').findOne({ "index": Number(roomNumber) }, function (err, data) {
+            if (err != null) {
+                console.log(err);
+                return;
+            }
 
-    res.render("coderoom-partner", {
-        userId: userId,
-        userName: userName,
-        userImg: userImg
-    });
-})
+            if (data != null) {
+                // console.log(data);
+                if (data.users.find(function (e) {
+                    return e == clientId;
+                }) == undefined && data.owner != clientId) {
+                    console.log("권한없음")
+                    res.redirect('/');
+                    return;
+                }
+
+                // socket 연결
+                successCallback()
+                return;
+            }
+            res.redirect('/');
+        })
+    })
+}
 
 
 app.get('/login', function (req, res) {
@@ -225,7 +274,7 @@ app.post('/room/getInfo', function (req, res) {
                 if (data.users.find(function (e) {
                     return e == clientId;
                 }) == undefined && data.owner != clientId) {
-                    console.log("권한없음")
+                    console.log("한없음")
                     res.sendStatus(401);
                     return;
                 }
@@ -316,7 +365,7 @@ app.get('/v/:code', function (req, res) {
             roomNum = data.room;
             roomName = data.name;
             roomDesc = data.desc;
-            
+
             res.render("invite", {
                 userId: userId,
                 userName: userName,
@@ -466,7 +515,7 @@ app.get('/api/_logout', function (req, res) {
     }
 })
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.render("index", {})
 })
 

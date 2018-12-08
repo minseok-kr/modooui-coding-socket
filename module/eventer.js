@@ -1,13 +1,26 @@
 /**
 *   사용자에게 알림을 담당하는 모듈
 */
-
-exports.onEvent = function(io) {
+exports.onEvent = function (io) {
+    console.log("OnEvent")
     io.on('connection', (socket) => {
         console.log('Client connected');
         socket.emit('connection', "Connected.");
 
-        socket.on('code', function(data) {
+        socket.on('join', function (data) {
+            console.log("Join: " + data.room);
+            let userNmae = data.userName;
+            let room = data.room;
+
+            // 같은 방 조인.
+            socket.join(room);
+            socket.broadcast.emit('alertChangeUserState', {
+                room: room,
+                name: userNmae
+            })
+        });
+
+        socket.on('code', function (data) {
             //        console.log("CodeUpdate!: " + data);
 
             /* TODO */
@@ -31,13 +44,13 @@ exports.onEvent = function(io) {
 
             socket.broadcast.emit('somebodySubmit', data)
         });
-        
+
         /**
          *  정답 제출 알림
          */
         socket.on('submitAnswer', (data) => {
             console.log("Submit but Awnser is " + data);
-            
+
             socket.broadcast.emit('submitResult', data);
         });
 
@@ -50,17 +63,32 @@ exports.onEvent = function(io) {
             let userImg = data.userImage;
             let message = data.message;
 
-            console.log("Someone send Message");
+            console.log("[" + room + "] " + userName + ": " + message);
 
-            socket.broadcast.emit('receivedMessage', {
+            socket.to(room).emit('receivedMessage', {
                 room: room,
                 name: userName,
                 img: userImg,
-                text: message,
+                text: message
             })
         })
 
+        // socket.on('onChangeUserState', (data) => {
+        //     let room = data.room;
+        //     let userName = data.userName;
+        //     let userImg = data.userImage;
+        //     let state = data.state;
+
+        //     socket.to(room).emit('alertChangeUserState', {
+        //         room: room,
+        //         name: userName,
+        //         img: userImg,
+        //         state: state
+        //     })
+        // })
+
         /* 웹페이지를 닫았을때 뒤 함수 호출*/
-        socket.on('disconnect', () => console.log('Client disconnected'));
+        socket.on('disconnect', () => {
+        });
     })
 }
