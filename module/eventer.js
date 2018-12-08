@@ -32,7 +32,9 @@ exports.onEvent = function(io) {
             socket.broadcast.emit('somebodySubmit', data)
         });
         
-        
+        /**
+         *  정답 제출 알림
+         */
         socket.on('submitAnswer', (data) => {
             console.log("Submit but Awnser is " + data);
             

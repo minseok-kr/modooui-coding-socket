@@ -225,7 +225,7 @@ app.post('/room/getInfo', function (req, res) {
                 if (data.users.find(function (e) {
                     return e == clientId;
                 }) == undefined && data.owner != clientId) {
-                    console.log("한없음")
+                    console.log("권한없음")
                     res.sendStatus(401);
                     return;
                 }
