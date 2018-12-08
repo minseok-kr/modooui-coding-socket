@@ -3,19 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/asset/js/chat.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/color/jquery.color-2.1.2.min.js" integrity="sha256-H28SdxWrZ387Ldn0qogCzFiUDDxfPiNIyJX7BECQkDE="
         crossorigin="anonymous"></script>
     <!--    <script src="./js/client.js"></script>-->
     <!--    <script src="./js/manager.js"></script>-->
 
     <script src="../asset/js/common.js"></script>
-    <script src="../asset/js/chat.js"></script>
 
     <title>모두의 코딩</title>
 
     <link rel="stylesheet" href='/asset/css/common.css' />
     <link rel="stylesheet" href='/asset/css/client-code.css' />
-    <link rel="stylesheet" href="/asset/css/chat.css" />
 
     <!-- Code Mirror -->
     <link rel="stylesheet" href='/asset/css/code-mirror-style.css' />
@@ -137,33 +138,7 @@
 
 </body>
 
-<div id="dialog-chat">
-    <div id="dialog-header">
-        <span>채팅</span>
-
-        <button class='btn-dialog-toggle'></button>
-    </div>
-
-    <div id="dialog-content">
-        <div id="messages">
-
-            <% for(var i = 0; i < 10; i++) { %>
-
-            <div class="dialog-message">
-                <img class="message-img rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg%3E"
-                    width="30" height="30" />
-                <span class="message-name">이름</span>
-                <span class="message-msg">메시지</span>
-            </div>
-
-            <% } %>
-        </div>
-
-        <div id="chat-input">
-            <input type="text" placeholder="메시지를 입력하세요" />
-        </div>
-    </div>
-</div>
+<% include inner-chat %>
 
 <div id="section-dialogs"></div>
 
@@ -297,6 +272,58 @@
 
             $('#btn_submit').attr('disabled', true);
         })
+
+        /**
+         *  채팅 소켓
+         */
+         socket.on("receivedMessage", function (msg) {
+            let newRoom = msg.room;
+            let newImg = msg.img;
+            let newName = msg.name;
+            let newMsg = msg.text;
+
+            if ($("#dialog-content").css("display") == "none") {
+                onNewMessage();
+            }
+
+            addMessage(newImg, newName, newMsg);
+        })
+
+        function onNewMessage() {
+            $('#dialog-chat').css({
+                "border-top-width": "3px",
+                "border-left-width": "3px",
+                "border-right-width": "3px",
+                "border-color": "#F7C251"
+            })
+            $('#dialog-chat').stop().animate({
+                "border-width": "1px",
+                "border-color": "#CCCCCC"
+            }, 500);
+        }
+
+        $(".btn-dialog-toggle").click(function () {
+            $("#dialog-content").toggle();
+        })
+
+        $('#chat-input input').keypress(function (event) {
+            if (event.keyCode == 13) {
+                let msg = $(this).val();
+                $(this).val("");
+
+                let userImg = "<%= userImg %>";
+                let userName = "<%= userName %>";
+
+                socket.emit("sendMessage", {
+                    room: "",
+                    userImage: userImg,
+                    userName: userName,
+                    message: msg
+                });
+
+                addMessage(userImg, userName, msg);
+            }
+        });
     })
 
     function initRoom() {

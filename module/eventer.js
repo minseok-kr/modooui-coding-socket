@@ -39,6 +39,25 @@ exports.onEvent = function(io) {
             socket.broadcast.emit('submitResult', data);
         });
 
+        /**
+         *  채팅 관련
+         */
+        socket.on('sendMessage', (data) => {
+            let room = data.room;
+            let userName = data.userName;
+            let userImg = data.userImage;
+            let message = data.message;
+
+            console.log("Someone send Message");
+
+            socket.broadcast.emit('receivedMessage', {
+                room: room,
+                name: userName,
+                img: userImg,
+                text: message,
+            })
+        })
+
         /* 웹페이지를 닫았을때 뒤 함수 호출*/
         socket.on('disconnect', () => console.log('Client disconnected'));
     })

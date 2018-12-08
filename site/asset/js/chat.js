@@ -1,33 +1,32 @@
-$(document).ready(function () {
-    let numOfMessage = 0;
+/**
+ * 채팅의 View와 관련된 동작.
+ */
 
-    $(".btn-dialog-toggle").click(function () {
-        $("#dialog-content").toggle();
-    })
+let numOfMessage = 0;
 
-    $('#chat-input input').keypress(function (event) {
-        if (event.keyCode == 13) {
-            let msg = $(this).val();
-            $(this).val("");
+function addMessage(userImg, userName, message) {
+    numOfMessage++;
+    $('#messages').append(getMessageTemplate(userImg, userName, message));
+    $('#messages').animate({
+        scrollTop: 100 * numOfMessage
+    }, 0);
+    moveToBottom();
+}
 
-            addMessage(msg);
-        }
-    });
+function moveToBottom() {
+    $('#messages').animate({
+        scrollTop: 100 * numOfMessage
+    }, 0);
+}
 
-    function addMessage(message) {
-        numOfMessage++;
-        $('#messages').append(getMessageTemplate(message));
-        $('#messages').animate({
-            scrollTop: 100 * numOfMessage
-        }, 0);
-    }
-
-    function getMessageTemplate(message) {
-        return `<div class="dialog-message">
-        <img class="message-img rounded-circle" src="https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg%3E"
+function getMessageTemplate(userImg, userName, message) {
+    return `<div class="dialog-message">
+        <img class="message-img rounded-circle" src="` + userImg + `"
             width="30" height="30" />
-        <span class="message-name">이름</span>
+        <span class="message-name">` + userName + `</span>
         <span class="message-msg">` + message + `</span>
     </div>`
-    }
-})
+}
+
+
+
