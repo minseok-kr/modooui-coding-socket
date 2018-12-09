@@ -249,10 +249,11 @@ app.get('/room/:code', function (req, res) {
 })
 
 // 방 입장시 초기화.
-app.post('/room/getInfo', function (req, res) {
+app.post('/api/room/getInfo', function (req, res) {
     // TODO: 정보 얻을 자격 있는지 Validate!
 
     let roomNumber = req.body.code;
+    let userType = req.body.type;
     let clientId = req.session.user.userId;
     console.log("[" + clientId + "] joins room " + roomNumber + ".");
 
@@ -269,19 +270,37 @@ app.post('/room/getInfo', function (req, res) {
                 return;
             }
 
-            if (data != null) {
-                console.log(data);
-                if (data.users.find(function (e) {
-                    return e == clientId;
-                }) == undefined && data.owner != clientId) {
-                    console.log("한없음")
-                    res.sendStatus(401);
+            if (userType == "client") {
+                if (data != null) {
+                    console.log(data);
+                    if (data.users.find(function (e) {
+                        return e == clientId;
+                    }) == undefined && data.owner != clientId) {
+                        console.log("권한없음")
+                        res.sendStatus(401);
+                        return;
+                    }
+    
+                    res.json(data);
                     return;
                 }
-
-                res.json(data);
-                return;
+            } else {
+                if (data != null) {
+                    console.log(data);
+                    if (data.users.find(function (e) {
+                        return e == clientId;
+                    }) == undefined && data.owner != clientId) {
+                        console.log("권한없음")
+                        res.sendStatus(401);
+                        return;
+                    }
+    
+                    res.json(data);
+                    return;
+                }
             }
+
+            
             res.sendStatus(400);
         })
     })

@@ -24,7 +24,7 @@ h5 {
 
 .jumbotron {
     margin-top: 10px;
-    padding: 5px 30px 20px 30px !important;
+    padding: 20px 20px 20px 20px !important;
 }
 
 .jumbotron h5 {
@@ -34,6 +34,19 @@ h5 {
 #btn_invite {
     float: right;
     cursor: pointer;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+}
+
+#btn_modify_info {
+    float: right;
+    cursor: pointer;
+    margin-right: 5px;
 
     user-select: none;
     -webkit-user-select: none;

@@ -43,17 +43,30 @@
 
     <% include header %>
     <div id="container-room-label" class="container">
-        <h3>이름</h3>
+        <h3 id="txt-room-name"></h3>
     </div>
     <div class="jumbotron container">
-        <h5>문제</h5>
-        <span>문제문제</span>
-        <h5>예상입력</h5>
-        <span>입력</span>
-        <h5>예상출력</h5>
-        <span>출력</span>
+
         <span id="btn_invite" class="badge badge-success" title="" data-container="body" data-toggle="popover"
             data-placement="bottom" data-original-title="전달하세요!">초대하기</span>
+
+        <span id="btn_modify_info" class="badge badge-info">수정내역 보내기</span>
+
+        <div class="form-group">
+            <label>문제</label>
+            <input type="text" class="form-control form-control-sm col-md-6" id="txt-room-problem" placeholder="Problem description">
+        </div>
+
+        <div class="form-group">
+            <label>예상입력</label>
+            <input type="text" class="form-control form-control-sm col-md-6" id="room-input-expected" placeholder="Expected Input">
+        </div>
+
+        <div class="form-group">
+            <label>예상출력</label>
+            <input type="text" class="form-control form-control-sm col-md-6" id="room-output-expected" placeholder="Expected Output">
+        </div>
+
     </div>
     <div class="container">
         <div id="wrapper-code"></div>
@@ -323,6 +336,45 @@
                 $('[data-toggle="popover"]').click();
             });
         });
+
+        /**
+         *  초기 방정보 로드
+         */
+        $.post('/api/room/getInfo', { type: "partner", code: "<%= roomNumber %>" }, function (data) {
+            console.log(data);
+            if (data != null) {
+                $('#txt-room-name').html(data.title);
+
+                let problem = data.problem;
+
+                $('#txt-room-problem').val(problem.descript);
+                $('#room-input-expected').val(problem.input);
+                $('#room-output-expected').val(problem.output);
+
+                let users = data.users;
+
+
+
+                for (let i = 0; i < users.length; i++) {
+                    
+
+                    // makeNewCodePanel()
+                }
+
+                // 유저 내용 가져오기
+
+                // {
+                //     _id: 5bfc2a2d3cf0fa84950b23e7,
+                //         index: 1,
+                //             title: '스터디에여',
+                //                 description: '히히',
+                //                     owner: '',
+                //                         users: [''],
+                //                             problem: { descript: '', input: '', output: '' }
+                // }
+            }
+        });
+
     })
 
 </script>
