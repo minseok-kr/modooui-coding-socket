@@ -312,6 +312,16 @@
             addSystem(newName, state);
         })
 
+        socket.on("handshake", function (data) {
+            let answer = {
+                'roomNumber': data.roomNumber,
+                'userName': data.name,
+                'userId': data.clientId,
+                'userImg': data.userImg,
+            }
+            socket.emit("handshake", answer)
+        })
+
         function onNewMessage() {
             $('#dialog-chat').css({
                 "border-top-width": "3px",

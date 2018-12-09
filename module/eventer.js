@@ -57,6 +57,14 @@ exports.onEvent = function (io) {
         });
 
         /**
+         *  접속 중임을 알림.
+         */
+        socket.on('handshake', (data) => {
+            console.log("ReceiveHandShake");
+            socket.to(data.roomNumber).emit("handshakeRes", data);
+        })
+
+        /**
          *  정답 제출 알림
          */
         socket.on('submitAnswer', (data) => {

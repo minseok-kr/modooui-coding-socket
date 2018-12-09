@@ -254,9 +254,24 @@
             addMessage(newImg, newName, newMsg);
         })
 
-        socket.on("alertChangeUserState", function (msg) {
-            let newName = msg.name;
-            // let state = msg.state;
+        socket.on('handshakeRes', function(raw) {
+            let data = {
+                'roomNumber': raw.roomNumber,
+                'userName': raw.userName,
+                'userId': raw.userId,
+                'userImg': raw.userImg,
+            }
+
+            makeNewCodePanel(data);
+        })
+
+        socket.on("alertChangeUserState", function (data) {
+            if (data.state == "join") {
+                makeNewCodePanel(data);
+            }
+
+            let newName = data.name;
+            // let state = data.state;
             let state = "";
 
             if ($("#dialog-content").css("display") == "none") {
@@ -265,7 +280,6 @@
 
             addSystem(newName, state);
         })
-
 
         function onNewMessage() {
             $('#dialog-chat').css({
