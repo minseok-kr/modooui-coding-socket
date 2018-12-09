@@ -314,10 +314,10 @@
 
         socket.on("handshake", function (data) {
             let answer = {
-                'roomNumber': data.roomNumber,
-                'userName': data.name,
-                'userId': data.clientId,
-                'userImg': data.userImg,
+                'roomNumber': "<%= roomNumber %>",
+                'userName': "<%= userName %>",
+                'userId': "<%= userId %>",
+                'userImg': "<%= userImg %>"
             }
             socket.emit("handshake", answer)
         })

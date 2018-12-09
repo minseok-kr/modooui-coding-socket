@@ -256,10 +256,10 @@
 
         socket.on('handshakeRes', function(raw) {
             let data = {
-                'roomNumber': raw.roomNumber,
-                'userName': raw.userName,
+                'room': raw.roomNumber,
+                'name': raw.userName,
                 'userId': raw.userId,
-                'userImg': raw.userImg,
+                'photo': raw.userImg,
             }
 
             makeNewCodePanel(data);
