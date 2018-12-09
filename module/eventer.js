@@ -14,7 +14,7 @@ exports.onEvent = function (io) {
 
             // 같은 방 조인.
             socket.join(room);
-            socket.broadcast.emit('alertChangeUserState', {
+            socket.to(room).emit('alertChangeUserState', {
                 room: room,
                 name: userNmae
             })
