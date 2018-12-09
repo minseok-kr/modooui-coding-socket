@@ -71,10 +71,17 @@ h5 {
 .code-small-view {
     height: 400px;
     width: 520px;
+    padding-left: 15px;
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
     -o-transform: scale(0.5);
     transform: scale(0.5);
+}
+
+.CodeMirror-linenumber,
+.CodeMirror-gutters  {
+    margin-left: -15px;
+
 }
 
 .code-big-view {

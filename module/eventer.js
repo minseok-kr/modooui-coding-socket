@@ -9,23 +9,34 @@ exports.onEvent = function (io) {
 
         socket.on('join', function (data) {
             console.log("Join: " + data.room);
-            let userNmae = data.userName;
+            let userName = data.userName;
             let room = data.room;
+            let userImg = data.photo;
+            let userId = data.clientId;
 
             // 같은 방 조인.
             socket.join(room);
             socket.to(room).emit('alertChangeUserState', {
+                state: "join",
                 room: room,
-                name: userNmae
+                name: userName,
+                photo: userImg,
+                userId: userId
             })
+
+            if (data.type == "partner") {
+                socket.to(room).emit("handshake", {
+                    "roomNumber": room,
+                    "name": userName,
+                    "clientId": userId,
+                    "userImg": userImg
+                });
+            }
         });
 
         socket.on('code', function (data) {
-            //        console.log("CodeUpdate!: " + data);
-
-            /* TODO */
-            // socket.of(roomnum).emit 형태로 변경
-            socket.broadcast.emit('codeUpdate', data);
+            console.log("CodeUpdate!: " + data.roomNumber + " / " + data.userId);
+            socket.to(data.roomNumber).emit('codeUpdate', data);
         });
 
         /**

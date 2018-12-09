@@ -96,8 +96,8 @@
        *   코드 에디터 초기화.
        */
 
-        let getCodeEditor = function (i) {
-            return `<div class="card client-view"><div class="card-body"><div class="client-code-view"><div id="txt-code-manager-` + String(i + 1) + `" class="inner-code-view code-small-view"></div></div></div></div>`
+        let getCodeEditor = function (id) {
+            return `<div class="card client-view"><div class="card-body"><div class="client-code-view"><div id="txt-code-manager-` + id + `" class="inner-code-view code-small-view"></div></div></div></div>`
         }
 
         let getCodeLabel = function (i) {
@@ -105,33 +105,11 @@
             <button id='btn_success-1' class='btn btn-success'>성공</button></div><div class="chip"><img class="chip-head" src='https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg'/><div class="chip-content">` + nameLabel[0] + `</div></div></div>`
         }
 
-        for (let i = 0; i < 4; i++) {
-            $('#wrapper-code').append(getCodeEditor(i))
-
-            let partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager-" + String(i + 1)), {
-                lineNumbers: true,
-                mode: "python",
-                tabSize: 8,
-                showCursorWhenSelecting: false
-            });
-
-            $(".card-body:has(#txt-code-manager-" + String(i + 1) + ")").append(getCodeLabel(i))
-
-            let id = "aaa"
-            if (i == 1) { id = "bbb" }
-            if (i == 2) { id = "ccc" }
-
-            codeView = {
-                clientId: id,
-                view: partnerCodeMirror
-            }
-
-            containerList.push(codeView);
-        }
         $(".CodeMirror textarea").attr("readonly", true);
 
         var socket = io();
         socket.emit('join', {
+            type: "partner",
             userName: "<%= userName %>",
             room: "<%= roomNumber %>"
         })
@@ -140,11 +118,16 @@
         });
 
         socket.on('codeUpdate', (data) => {
+            // let data = {
+            //     "code": code,
+            //     "userId": "<%= userId %>",
+            //     "roomNumber": "<%= roomNumber %>",
+            // }
+
             $codeEditor = $("#wrapper-code");
-            // partnerCodeMirror.setValue(data);
             containerList.forEach(function (ele) {
-                if (ele.clientId == "aaa") {
-                    ele.view.setValue(data);
+                if (ele.clientId == data.userId) {
+                    ele.view.setValue(data.code);
                 }
             })
 
@@ -375,6 +358,45 @@
             }
         });
 
+        /**
+         *  새로운 참여자 코드 창 만들기.
+         * 
+         */
+         function makeNewCodePanel(data) {
+            let userId = data.userId;
+            
+            // 중복 체크
+            let isExist = false;
+            containerList.forEach(function(element) {
+                console.log(element.clientId + " / " + userId)
+                if (element.clientId == userId) {
+                    isExist = true;
+                }
+            })
+            if (isExist) return;
+            
+
+            $('#wrapper-code').append(getCodeEditor(userId))
+            let partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager-" + userId), {
+                lineNumbers: true,
+                mode: "python",
+                tabSize: 8,
+                showCursorWhenSelecting: false
+            });
+            $(".card-body:has(#txt-code-manager-" + userId + ")").append(getCodeLabel(userId))
+
+            let codeView = {
+                clientId: userId,
+                view: partnerCodeMirror
+            }
+
+            containerList.push(codeView);
+        }
+        // state: "join",
+            //     room: room,
+            //         name: userNmae,
+            //             photo: userImg,
+            //                 userId: userId
     })
 
 </script>

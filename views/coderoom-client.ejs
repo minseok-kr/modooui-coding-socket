@@ -151,7 +151,9 @@
         var sendStatus = document.getElementById('send-state');
         socket.emit('join', { 
                 userName: "<%= userName %>",
-                room: "<%= roomNumber %>"
+                clientId: "<%= userId %>",
+                room: "<%= roomNumber %>",
+                photo: "<%= userImg %>"
             })
 
         socket.on('connection', function (data) {
@@ -249,7 +251,13 @@
         }
 
         function emitCodeUpdate(code) {
-            socket.emit('code', code);
+            let data = {
+                "code": code,
+                "userId": "<%= userId %>",
+                "roomNumber": "<%= roomNumber %>",
+            }
+
+            socket.emit('code', data);
         }
 
         /**
@@ -345,7 +353,7 @@
     function initRoom() {
         let paths = window.location.href.split('?')
         let room = paths[1];
-        $.post('/room/getInfo', { "code": room }, function (data) {
+        $.post('/api/room/getInfo', { "type": "client", "code": room }, function (data) {
             if (data != null) {
                 $('#txt-room-title').html(data.title);
 
