@@ -131,11 +131,17 @@
                 }
             })
 
+            console.log(`$(".card:has(#txt-code-manager-"` + data.userId + `")");`)
+            $card = $(".card:has(#txt-code-manager-" + data.userId + ")");
+            $card.css('border', '1px solid yellow');
+            $card.stop().animate({
+                'border-color': 'rgba(0,0,0,0.125)'
+            }, 500);
+
+
+
             $codeEditor.removeClass('helpped_client');
             $codeEditor.removeClass('submitted_client');
-
-            $codeEditor.css({ backgroundColor: "#FFFF0050" });
-            $codeEditor.stop().animate({ backgroundColor: "#FFFFFF" }, 500);
 
             // 업데이트시 제출 취소
             hideControlBox();
@@ -254,7 +260,7 @@
             addMessage(newImg, newName, newMsg);
         })
 
-        socket.on('handshakeRes', function(raw) {
+        socket.on('handshakeRes', function (raw) {
             let data = {
                 'room': raw.roomNumber,
                 'name': raw.userName,
@@ -353,7 +359,7 @@
 
 
                 for (let i = 0; i < users.length; i++) {
-                    
+
 
                     // makeNewCodePanel()
                 }
@@ -376,19 +382,19 @@
          *  새로운 참여자 코드 창 만들기.
          * 
          */
-         function makeNewCodePanel(data) {
+        function makeNewCodePanel(data) {
             let userId = data.userId;
-            
+
             // 중복 체크
             let isExist = false;
-            containerList.forEach(function(element) {
+            containerList.forEach(function (element) {
                 console.log(element.clientId + " / " + userId)
                 if (element.clientId == userId) {
                     isExist = true;
                 }
             })
             if (isExist) return;
-            
+
 
             $('#wrapper-code').append(getCodeEditor(userId))
             let partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager-" + userId), {
@@ -407,10 +413,10 @@
             containerList.push(codeView);
         }
         // state: "join",
-            //     room: room,
-            //         name: userNmae,
-            //             photo: userImg,
-            //                 userId: userId
+        //     room: room,
+        //         name: userNmae,
+        //             photo: userImg,
+        //                 userId: userId
     })
 
 </script>
