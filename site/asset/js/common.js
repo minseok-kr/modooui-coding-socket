@@ -9,20 +9,3 @@ let getSuccessToast = function(str) {
 let getFailToast = function(str) {
     return '<div class="alert alert-danger col-md-8" role="alert">' + str + '</div>'
 }
-
-
-
-function showControlBox() {
-    $('#container-control').css({
-        display: "block",
-        opacity: 0
-    }).animate({
-        opacity: 1
-    }, 300);
-}
-
-function hideControlBox() {
-    $('#container-control').css({
-        display: "none"
-    })
-}

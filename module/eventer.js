@@ -2,7 +2,6 @@
 *   사용자에게 알림을 담당하는 모듈
 */
 exports.onEvent = function (io) {
-    console.log("OnEvent")
     io.on('connection', (socket) => {
         console.log('Client connected');
         socket.emit('connection', "Connected.");
@@ -19,8 +18,8 @@ exports.onEvent = function (io) {
             socket.to(room).emit('alertChangeUserState', {
                 state: "join",
                 room: room,
-                name: userName,
-                photo: userImg,
+                userName: userName,
+                userImg: userImg,
                 userId: userId
             })
 
@@ -35,7 +34,6 @@ exports.onEvent = function (io) {
         });
 
         socket.on('code', function (data) {
-            console.log("CodeUpdate!: " + data.roomNumber + " / " + data.userId);
             socket.to(data.roomNumber).emit('codeUpdate', data);
         });
 

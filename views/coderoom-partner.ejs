@@ -89,7 +89,6 @@
 <script>
 
     let containerList = [];
-    let nameLabel = ["박민석"]
     /* Socket.io 초기 설정 */
     $(function () {
         /**
@@ -100,9 +99,9 @@
             return `<div class="card client-view"><div class="card-body"><div class="client-code-view"><div id="txt-code-manager-` + id + `" class="inner-code-view code-small-view"></div></div></div></div>`
         }
 
-        let getCodeLabel = function (i) {
-            return `<div><div style="display:none" class='control-panel'><button id='btn_fail-1' class='btn btn-danger'>실패</button>
-            <button id='btn_success-1' class='btn btn-success'>성공</button></div><div class="chip"><img class="chip-head" src='https://lh6.googleusercontent.com/-hezxJKyrbUs/AAAAAAAAAAI/AAAAAAAAADs/tJTe8OEjjBs/photo.jpg'/><div class="chip-content">` + nameLabel[0] + `</div></div></div>`
+        let getCodeLabel = function (data) {
+            return `<div><div style="display:none" class='control-panel'><button class='btn btn-danger btn_fail'>실패</button>
+            <button class='btn btn-success btn_success'>성공</button></div><div class="chip"><img class="chip-head" src='` + data.userImg + `'/><div class="chip-content">` + data.userName + `</div></div></div>`
         }
 
         $(".CodeMirror textarea").attr("readonly", true);
@@ -147,7 +146,7 @@
         socket.on('somebodySubmit', (data) => {
             notifyResponse(data.userId, "#3498db")
 
-            showControlBox();
+            showControlBox(data.userId);
         });
 
         function notifyChange(userId, color) {
@@ -162,8 +161,8 @@
             $card = $(".card:has(#txt-code-manager-" + userId + ")");
             $card.css('border', '2px solid ' + color);
             // $card.stop().animate({
-                // 'border-width': '1px',
-                // 'border-color': 'rgba(0,0,0,0.125)'
+            // 'border-width': '1px',
+            // 'border-color': 'rgba(0,0,0,0.125)'
             // }, 500);
         }
 
@@ -183,33 +182,6 @@
         }
 
         // $(".client-code-view textarea").attr("readonly", true);
-
-        $(".card").click(function () {
-            if (!$(this).hasClass('huge')) {
-                $(this).css({
-                    "position": "fixed",
-                    // "width": window.innerWidth - 400,
-                    "width": 1000,
-                    // "height": window.innerHeight - 400,
-                    "height": 600,
-                    "left": 200,
-                    "top": 200,
-                    "z-index": 999
-                })
-                $(this).addClass('huge');
-                $('#blind').stop()
-                    .css({ "display": "block", "opacity": 0 })
-                    .animate({ "opacity": 1 }, 500)
-
-                $(".inner-code-view:nth-child(1)").removeClass('code-small-view')
-                $(".inner-code-view:nth-child(1)").addClass('code-big-view');
-
-                const refrsh = function () {
-                    containerList[0].view.refresh()
-                }
-                setTimeout(refrsh, 50)
-            }
-        })
 
         $("#blind").click(function () {
             // $(".huge").trigger();
@@ -242,16 +214,6 @@
             //                emitCodeUpdate(myCodeMirror.getValue());
         })
 
-        $("#btn_success").click(function () {
-            emitSubmitAnswer("success");
-            hideControlBox();
-        })
-
-        $("#btn_fail").click(function () {
-            emitSubmitAnswer("fail");
-            hideControlBox();
-        })
-
         /**
         *  채팅 소켓
         */
@@ -271,9 +233,9 @@
         socket.on('handshakeRes', function (raw) {
             let data = {
                 'room': raw.roomNumber,
-                'name': raw.userName,
+                'userName': raw.userName,
                 'userId': raw.userId,
-                'photo': raw.userImg,
+                'userImg': raw.userImg,
             }
 
             makeNewCodePanel(data);
@@ -343,7 +305,7 @@
             $.post('/api/invite/generate', { "room": room }, function (data) {
                 let inviteCode = data.code
 
-                $('[data-toggle="popover"]').attr("data-content", "localhost:3000/v/" + inviteCode);
+                $('[data-toggle="popover"]').attr("data-content", "http://ec2-54-180-159-221.ap-northeast-2.compute.amazonaws.com/v/" + inviteCode);
                 $('[data-toggle="popover"]').click();
             });
         });
@@ -392,6 +354,8 @@
          */
         function makeNewCodePanel(data) {
             let userId = data.userId;
+            let userName = data.userName;
+            let userImg = data.userImg;
 
             // 중복 체크
             let isExist = false;
@@ -403,15 +367,46 @@
             })
             if (isExist) return;
 
+            $('#wrapper-code').append(getCodeEditor(userId));
 
-            $('#wrapper-code').append(getCodeEditor(userId))
+            // $('.card:has(#txt-code-manager-' + userId + ')').click(function (e) {
+            $('.card:has(#txt-code-manager-' + userId + ') > .client-code-view').click(function (e) {
+                e.stopPropagation();
+                if (!$(this).hasClass('huge')) {
+                    $(this).css({
+                        "position": "fixed",
+                        // "width": window.innerWidth - 400,
+                        "width": 1000,
+                        // "height": window.innerHeight - 400,
+                        "height": 600,
+                        "left": 200,
+                        "top": 200,
+                        "z-index": 999
+                    })
+                    $(this).addClass('huge');
+                    $('#blind').stop()
+                        .css({ "display": "block", "opacity": 0 })
+                        .animate({ "opacity": 1 }, 500)
+
+                    $(".inner-code-view:nth-child(1)").removeClass('code-small-view')
+                    $(".inner-code-view:nth-child(1)").addClass('code-big-view');
+
+                    $(this).css('border', '1px solid rgba(0,0,0,0.125)');
+
+                    const refrsh = function () {
+                        containerList[0].view.refresh()
+                    }
+                    setTimeout(refrsh, 50)
+                }
+            })
+
             let partnerCodeMirror = CodeMirror(document.getElementById("txt-code-manager-" + userId), {
                 lineNumbers: true,
                 mode: "python",
                 tabSize: 8,
                 showCursorWhenSelecting: false
             });
-            $(".card-body:has(#txt-code-manager-" + userId + ")").append(getCodeLabel(userId))
+            $(".card-body:has(#txt-code-manager-" + userId + ")").append(getCodeLabel(data))
 
             let codeView = {
                 clientId: userId,
@@ -425,6 +420,24 @@
         //         name: userNmae,
         //             photo: userImg,
         //                 userId: userId
+
+        function showControlBox(userId) {
+            $('.control-panel').css("display", "inline-block");
+
+              $(".card:has(#txt-code-manager-" + userId + ") .btn_success").click(function (e) {
+                emitSubmitAnswer("success");
+                hideControlBox(userId);
+            })
+
+            $(".card:has(#txt-code-manager-" + userId + ") .btn_fail").click(function (e) {
+                emitSubmitAnswer("fail");
+                hideControlBox(userId);
+            })
+        }
+
+        function hideControlBox(userId) {
+            $('.control-panel').css("display", "none");
+        }
     })
 
 </script>
