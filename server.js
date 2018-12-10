@@ -219,6 +219,7 @@ app.post('/api/room/generate', function (req, res) {
     };
 
     let id = req.session.user.userId;
+    let roomPhoto = req.session.user.userImg;
     mongodb.connect(function (err) {
         if (err != null) return
 
@@ -234,7 +235,7 @@ app.post('/api/room/generate', function (req, res) {
             let maxRoomIndex = num;
             // 방에 설정될 기본 문제.
             let problem = { "descript": reqData.problemDesc, "input": reqData.problemIn, "output": reqData.problemOut }
-            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": id, "users": [], "problem": problem }
+            let newRoom = { "index": maxRoomIndex, "title": reqData.name, "description": reqData.desc, "owner": id, "photo": roomPhoto, "users": [], "problem": problem }
 
             db.collection('room').insertOne(newRoom);
             res.redirect("/room/" + maxRoomIndex);
@@ -384,12 +385,16 @@ app.get('/v/:code', function (req, res) {
             roomNum = data.room;
             roomName = data.name;
             roomDesc = data.desc;
+            let photo = data.photo;
+
+            console.log(result)
 
             res.render("invite", {
                 userId: userId,
                 userName: userName,
                 userEmail: userEmail,
                 userImg: userImg,
+                photo: photo,
                 roomNum: roomNum,
                 roomName: roomName,
                 roomDesc: roomDesc
