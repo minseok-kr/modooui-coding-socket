@@ -60,7 +60,7 @@
             <div class="col col-md-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title problem-subject">예상 입력</h5>
+                        <h5 class="card-title problem-subject">예제 입력</h5>
                         <p class="card-text" id="txt-problem-input">none</p>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
             <div class="col col-md-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title problem-subject">예상 출력</h5>
+                        <h5 class="card-title problem-subject">예제 출력</h5>
                         <p id="quiz-answer" class="card-text">0</p>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                 <div class="col">
                     <div class='card md-3'>
                         <div class="card-body">
-                            <div class="card-title problem-subject">stdout</div>
+                            <div class="card-title problem-subject">출력</div>
                             <div class="card-text"></div>
                         </div>
                     </div>
@@ -108,16 +108,7 @@
                 <div class="col">
                     <div class='card md-3'>
                         <div class="card-body">
-                            <div class="card-title problem-subject">stderr</div>
-                            <div class="card-text"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class='card md-3'>
-                        <div class="card-body">
-                            <div class="card-title problem-subject">error</div>
+                            <div class="card-title problem-subject">에러</div>
                             <div class="card-text"></div>
                         </div>
                     </div>
@@ -190,7 +181,9 @@
             */
         $('#btn_help').click(function () {
             // RestfulAPI or Socket
-            socket.emit('help', "me")
+            socket.emit('help', {
+                userId: "<%= userId %>"
+            })
             toast("도움을 요청합니다. 기다려주세요...", "fail");
         });
 
@@ -240,7 +233,9 @@
             toast("제출하였습니다. 기다려주세요...");
             $('#btn_submit').addClass("m-progress");
 
-            socket.emit('submit', "it");
+            socket.emit('submit', {
+                userId: "<%= userId %>"
+            });
         })
 
         /**

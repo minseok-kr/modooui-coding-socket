@@ -131,14 +131,7 @@
                 }
             })
 
-            console.log(`$(".card:has(#txt-code-manager-"` + data.userId + `")");`)
-            $card = $(".card:has(#txt-code-manager-" + data.userId + ")");
-            $card.css('border', '1px solid yellow');
-            $card.stop().animate({
-                'border-color': 'rgba(0,0,0,0.125)'
-            }, 500);
-
-
+            notifyChange(data.userId, "yellow")
 
             $codeEditor.removeClass('helpped_client');
             $codeEditor.removeClass('submitted_client');
@@ -148,16 +141,31 @@
         });
 
         socket.on('somebodyHelp', (data) => {
-            $("#wrapper-code").addClass('helpped_client');
-            $codeEditor.css({ backgroundColor: "red" });
+            notifyResponse(data.userId, "blue")
         });
 
         socket.on('somebodySubmit', (data) => {
-            $("#wrapper-code").addClass('submitted_client');
-            $codeEditor.css({ backgroundColor: "blue" });
+            notifyResponse(data.userId, "#3498db")
 
             showControlBox();
         });
+
+        function notifyChange(userId, color) {
+            $card = $(".card:has(#txt-code-manager-" + userId + ")");
+            $card.css('border', '1px solid ' + color);
+            $card.stop().animate({
+                'border-color': 'rgba(0,0,0,0.125)'
+            }, 500);
+        }
+
+        function notifyResponse(userId, color) {
+            $card = $(".card:has(#txt-code-manager-" + userId + ")");
+            $card.css('border', '2px solid ' + color);
+            // $card.stop().animate({
+                // 'border-width': '1px',
+                // 'border-color': 'rgba(0,0,0,0.125)'
+            // }, 500);
+        }
 
         /**
         *   Socket 관련 로직
