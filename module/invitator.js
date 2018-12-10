@@ -51,7 +51,7 @@ exports.validateInvitation = function(mongodb, inviteCode, userId, callback) {
 
                         // 스터디룸 이동을 위한 데이터 제공.                        
                         if (roomData != null) {
-                            let targetData = { "room": Number(data.room), "name": roomData.title, "desc": roomData.description };
+                            let targetData = { "room": Number(data.room), "name": roomData.title, "photo": roomData.photo, "desc": roomData.description };
                             callback({status: 200, data: targetData})
                         } else {
                             callback({status: 500})
