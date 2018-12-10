@@ -78,8 +78,12 @@ h5 {
     transform: scale(0.5);
 }
 
-.CodeMirror-linenumber,
-.CodeMirror-gutters  {
+.CodeMirror-linenumber {
+    margin-left: -15px;
+
+}
+
+.CodeMirror-gutters {
     margin-left: -15px;
 
 }
