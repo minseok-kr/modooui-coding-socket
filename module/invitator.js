@@ -76,10 +76,8 @@ exports.generateInviteCode = function (database, roomNumber, callback) {
         }
 
         const db = database.db("modoocoding");
-        db.collection('invite').find({ "room": roomNumber }).toArray(function (err, docs) {
-            // TODO: find -> findOne
-            if (docs.length != 0) {
-                one = docs[0];
+        db.collection('invite').findOne({ "room": roomNumber }, function (err, one) {
+            if (one != null) {
 
                 if (isTimeNotValid(one.expire)) {
                     db.collection('invite').deleteMany({"room": roomNumber})
