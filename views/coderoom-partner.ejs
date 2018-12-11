@@ -246,7 +246,7 @@
                 makeNewCodePanel(data);
             }
 
-            let newName = data.name;
+            let newName = data.userName;
             // let state = data.state;
             let state = "";
 
@@ -305,7 +305,8 @@
             $.post('/api/invite/generate', { "room": room }, function (data) {
                 let inviteCode = data.code
 
-                $('[data-toggle="popover"]').attr("data-content", "http://ec2-54-180-159-221.ap-northeast-2.compute.amazonaws.com/v/" + inviteCode);
+                $('[data-toggle="popover"]').attr("data-content", "localhost/v/" + inviteCode);
+                // $('[data-toggle="popover"]').attr("data-content", "http://ec2-54-180-159-221.ap-northeast-2.compute.amazonaws.com/v/" + inviteCode);
                 $('[data-toggle="popover"]').click();
             });
         });

@@ -387,8 +387,6 @@ app.get('/v/:code', function (req, res) {
             roomDesc = data.desc;
             let photo = data.photo;
 
-            console.log(result)
-
             res.render("invite", {
                 userId: userId,
                 userName: userName,
