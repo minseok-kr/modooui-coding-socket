@@ -305,8 +305,8 @@
             $.post('/api/invite/generate', { "room": room }, function (data) {
                 let inviteCode = data.code
 
-                $('[data-toggle="popover"]').attr("data-content", "localhost/v/" + inviteCode);
-                // $('[data-toggle="popover"]').attr("data-content", "http://ec2-54-180-159-221.ap-northeast-2.compute.amazonaws.com/v/" + inviteCode);
+                // $('[data-toggle="popover"]').attr("data-content", "localhost/v/" + inviteCode);
+                $('[data-toggle="popover"]').attr("data-content", "http://ec2-54-180-159-221.ap-northeast-2.compute.amazonaws.com/v/" + inviteCode);
                 $('[data-toggle="popover"]').click();
             });
         });
@@ -371,7 +371,7 @@
             $('#wrapper-code').append(getCodeEditor(userId));
 
             // $('.card:has(#txt-code-manager-' + userId + ')').click(function (e) {
-            $('.card:has(#txt-code-manager-' + userId + ') > .client-code-view').click(function (e) {
+            $('.card:has(#txt-code-manager-' + userId + ')').click(function (e) {
                 e.stopPropagation();
                 if (!$(this).hasClass('huge')) {
                     $(this).css({
