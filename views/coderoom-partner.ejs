@@ -99,9 +99,9 @@
             return `<div class="card client-view"><div class="card-body"><div class="client-code-view"><div id="txt-code-manager-` + id + `" class="inner-code-view code-small-view"></div></div></div></div>`
         }
 
-        let getCodeLabel = function (data) {
+        let getCodeLabel = function (userName, userImage) {
             return `<div><div style="display:none" class='control-panel'><button class='btn btn-danger btn_fail'>실패</button>
-            <button class='btn btn-success btn_success'>성공</button></div><div class="chip"><img class="chip-head" src='` + data.userImg + `'/><div class="chip-content">` + data.userName + `</div></div></div>`
+            <button class='btn btn-success btn_success'>성공</button></div><div class="chip"><img class="chip-head" src='` + userImage + `'/><div class="chip-content">` + userName + `</div></div></div>`
         }
 
         $(".CodeMirror textarea").attr("readonly", true);
@@ -407,7 +407,7 @@
                 tabSize: 8,
                 showCursorWhenSelecting: false
             });
-            $(".card-body:has(#txt-code-manager-" + userId + ")").append(getCodeLabel(data))
+            $(".card-body:has(#txt-code-manager-" + userId + ")").append(getCodeLabel(userName, userImg))
 
             let codeView = {
                 clientId: userId,
