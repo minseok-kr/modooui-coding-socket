@@ -1,0 +1,82 @@
+CodeMirror
+
+MIT License
+Copyright (C) 2017 by Marijn Haverbeke <marijnh@gmail.com> and others
+
+
+Socketio
+
+MIT License
+Copyright (c) 2014-2018 Automattic <dev@cloudup.com>
+
+
+EJS
+
+licenses: Apache-2.0
+repository: https://github.com/mde/ejs
+publisher: Matthew Eernisse
+email: mde@fleegix.org
+url: http://fleegix.org
+
+
+Mongodb-core
+
+licenses: Apache-2.0
+repository: https://github.com/mongodb-js/mongodb-core
+publisher: Christian Kvalheim
+
+
+Mongodb
+
+licenses: Apache-2.0
+repository: https://github.com/mongodb/node-mongodb-native
+
+
+cookie-parser
+
+licenses: MIT
+repository: https://github.com/expressjs/cookie-parser
+publisher: TJ Holowaychuk
+email: tj@vision-media.ca
+url: http://tjholowaychuk.com
+
+
+body-parser
+
+licenses: MIT
+repository: https://github.com/expressjs/body-parser
+
+
+express
+
+licenses: MIT
+repository: https://github.com/expressjs/express
+publisher: TJ Holowaychuk
+email: tj@vision-media.ca
+
+
+express-session
+
+licenses: MIT
+repository: https://github.com/expressjs/session
+publisher: TJ Holowaychuk
+email: tj@vision-media.ca
+
+
+express-error-handler
+
+licenses: MIT
+repository: https://github.com/dilvie/express-error-handler
+publisher: Eric Elliott
+
+
+bootstrap
+
+The MIT License (MIT)
+
+Copyright (c) 2011-2018 Twitter, Inc.
+Copyright (c) 2011-2018 The Bootstrap Authors
+
+jQuery
+
+The MIT License (MIT)
